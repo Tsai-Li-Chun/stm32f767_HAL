@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": ".git"
+		},
+		{
+			"path": "STM32F767_Library"
+		},
+		{
+			"path": "0_template"
+		}
+	],
+	"settings": 
+	{
+	}
+	
+}

@@ -1,0 +1,8 @@
+Operating System    ：Ubuntu20.04-TLS
+compiler            ：gcc 9.3.0
+Code Editor         ：Visual Studio Code
+Evaluation Board    ：中國正點原子的阿波羅F767開發板
+Brief               ：工程模板範例，LED2亮滅由WAUP按鈕控制，
+                    　使用Timer3計數1ms中斷來製作delay使LED1閃爍。
+                    
+日後若有新增註解的話，後日補上

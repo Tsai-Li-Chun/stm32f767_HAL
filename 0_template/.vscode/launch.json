@@ -1,0 +1,29 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            /* 類型 */
+            "type": "cortex-debug",
+            /* 問答方式 */
+            "request": "launch",
+            /* 使用何種服務來Debug */
+            "servertype": "openocd",
+            /* 專案路徑 */
+            "cwd": "${workspaceRoot}",
+            /* 晶片用的二進制執行檔(燒錄檔) */
+            "executable": "${workspaceRoot}/build/0_template.elf",
+            /* 名子 */
+            "name": "Debug (OpenOCD)",
+            /* 指定晶片 */
+            "device": "STM32F767IG",
+            /* 指定svd檔 */
+            "svdFile": "${workspaceRoot}/STM32F7x7.svd",
+            /* 進Debug後直接從main開始 */
+            "runToMain": true,
+            /* 指定openocd.cfg */
+            "configFiles": [
+                "${workspaceRoot}/openocd.cfg"
+            ]
+        }
+    ]
+}
