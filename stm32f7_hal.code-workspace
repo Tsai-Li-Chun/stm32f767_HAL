@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "0_template"
+		},
+		{
+			"path": "1_uart"
 		}
 	],
 	"settings": 
