@@ -35,7 +35,11 @@ extern "C" {
 
 /* Extern Variables -----------------------------------------*/
 /* Extern Variables Begin */
+
 extern UART_HandleTypeDef huart1;
+/* uart資料接收陣列 */
+extern uint8_t buf[uart1_rx_size];
+
 /* Extern Variables End */
 
 

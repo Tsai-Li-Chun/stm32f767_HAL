@@ -153,7 +153,7 @@ LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BU
 
 #######################################
 # default action: build all
-#######################################
+######################################
 all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
 
 #######################################
@@ -187,8 +187,8 @@ $(BUILD_DIR):
 
 
 ######################################
-	System OS
-	OS = "ubuntu" or "windows"
+#	System OS
+#	OS = "ubuntu" or "windows"
 ######################################
 OS = ubuntu
 ifeq ($(OS), ubuntu)

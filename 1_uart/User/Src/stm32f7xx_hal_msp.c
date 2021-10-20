@@ -126,10 +126,10 @@ void HAL_UART_MspInit(UART_HandleTypeDef* hu)
 		/* 載入設定 */
 		HAL_GPIO_Init(GPIO_Port_usart1, &GPIO_InitStruct);
 
-		// /* 設定USART1接收中斷優先度 */
-		// HAL_NVIC_SetPriority(USART1_IRQn, 0, 1);
-		// /* 開啟USART1中斷 */
-		// HAL_NVIC_EnableIRQ(USART1_IRQn);
+		/* 設定USART1接收中斷優先度 */
+		HAL_NVIC_SetPriority(USART1_IRQn, 0, 1);
+		/* 開啟USART1中斷 */
+		HAL_NVIC_EnableIRQ(USART1_IRQn);
 	}
 }
 
