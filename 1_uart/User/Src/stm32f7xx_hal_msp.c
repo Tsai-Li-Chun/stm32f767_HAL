@@ -26,6 +26,9 @@
 /* User Includes --------------------------------------------*/
 /* User Includes Begin */
 #include "define_gpio_nickname.h"
+#include "main.h"
+#include "uart.h"
+#include "dma.h"
 /* User Includes End */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -90,16 +93,16 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* ht)
 	{
 		/* 開啟TIM3工作時脈 */
 		__HAL_RCC_TIM3_CLK_ENABLE();
-		/* 設定TIM3計數更新中斷優先度 */
+		/* 設定CPU的TIM3計數更新中斷優先度 */
 		HAL_NVIC_SetPriority(TIM3_IRQn, 0, 0);
-		/* 開啟TIM3中斷 */
+		/* 開啟CPU的TIM3中斷 */
 		HAL_NVIC_EnableIRQ(TIM3_IRQn);
 	}
 }
 
 /** * @brief USART1 Msp StartUp Configuration
 	*		 RCC_CLK,GPIO,NVIC etc...
-	* @param TIM_HandleTypeDef*(pointer) 
+	* @param UART_HandleTypeDef*(pointer) 
 	* @return None 
 ** */
 void HAL_UART_MspInit(UART_HandleTypeDef* hu)
@@ -112,6 +115,8 @@ void HAL_UART_MspInit(UART_HandleTypeDef* hu)
 	{
 		/* 開啟USART1工作時脈 */
 		__HAL_RCC_USART1_CLK_ENABLE();
+		/* 開啟GPIOA工作時脈 */
+		__HAL_RCC_GPIOA_CLK_ENABLE();
 
 		/* 設定輸出模式-推挽映射 */
 		GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -126,16 +131,21 @@ void HAL_UART_MspInit(UART_HandleTypeDef* hu)
 		/* 載入設定 */
 		HAL_GPIO_Init(GPIO_Port_usart1, &GPIO_InitStruct);
 
-		/* 設定USART1接收中斷優先度 */
-		HAL_NVIC_SetPriority(USART1_IRQn, 0, 1);
-		/* 開啟USART1中斷 */
-		HAL_NVIC_EnableIRQ(USART1_IRQn);
+		/* UART1-Rx的DMA通道設定 */
+		DMA_UART1RX_Init(hu);
+		/* UART1-Tx的DMA通道設定 */
+		DMA_UART1TX_Init(hu);
+
+		// /* 設定CPU的USART1接收中斷優先度 */
+		// HAL_NVIC_SetPriority(USART1_IRQn, 0, 1);
+		// /* 開啟CPU的USART1中斷 */
+		// HAL_NVIC_EnableIRQ(USART1_IRQn);
 	}
 }
 
 /** * @brief USART1 Msp ShatDown Configuration
 	*		 RCC_CLK,GPIO,NVIC etc...
-	* @param TIM_HandleTypeDef*(pointer) 
+	* @param UART_HandleTypeDef*(pointer) 
 	* @return None 
 ** */
 void HAL_UART_MspDeInit(UART_HandleTypeDef* hu)

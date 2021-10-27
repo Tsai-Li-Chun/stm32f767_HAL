@@ -56,7 +56,8 @@ User/Src/stm32f7xx_it.c \
 User/Src/main.c \
 User/Src/gpio.c \
 User/Src/tim.c \
-User/Src/uart.c
+User/Src/uart.c \
+User/Src/dma.c
 
 # ASM sources
 ASM_SOURCES =  \

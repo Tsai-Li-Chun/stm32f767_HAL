@@ -29,9 +29,8 @@
 /* Variables ------------------------------------------------*/
 /* Variables Begin */
 
-/* 宣告usart1設定用結構體 */
+/* usart1設定用結構體 */
 UART_HandleTypeDef huart1;
-
 /* uart資料接收陣列 */
 uint8_t buf[uart1_rx_size] = {0};
 
@@ -79,15 +78,24 @@ void MX_USART1_Init(void)
 		Error_Handler();
 }
 
+/** * @brief  UART1 Rx Transfer completed callback.
+	* @param UART_HandleTypeDef*(pointer) 
+	* @return None 
+** */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *hu)
 {
+	/* 若USART1產生計數中斷 */
 	if( hu->Instance == USART1 )
 	{
+		/* 將收到的資料傳給電腦打印 */
 		HAL_UART_Transmit(&huart1, buf, uart1_rx_size, 100);
-		for(int i=0;i<uart1_rx_size;i++)
-			buf[i] = 0;
+		/* 打印換行 */
+		buf[0] = '\n';
+		HAL_UART_Transmit(&huart1, &buf[0], 1, 100);
+		/* 清除資料陣列的舊資料 */
+		for(int i=0;i<uart1_rx_size;i++) buf[i] = 0;
+		/* LED1反相，方便觀察 */
 		HAL_GPIO_TogglePin(GPIO_Port_LED, GPIO_Pin_LED1);
-		HAL_UART_Receive_IT(&huart1, buf, uart1_rx_size);
 	}
 }
 

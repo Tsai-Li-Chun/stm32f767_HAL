@@ -6,6 +6,7 @@
             /* 編頭檔路徑設定 */
             "includePath": [
                 "${workspaceFolder}/User/Inc",
+                "${workspaceFolder}/User/Src",
                 "/home/tsailichun/stm32f767_HAL/STM32F767_Library/CMSIS",
                 "/home/tsailichun/stm32f767_HAL/STM32F767_Library/STM32F7xx_HAL_Driver/Inc",
                 "/home/tsailichun/stm32f767_HAL/STM32F767_Library/STM32F7xx_StartUp/Include"

@@ -63,18 +63,15 @@ int main(void)
 	MX_TIM3_Init();
 	/* USART1初始化 */
 	MX_USART1_Init();
-	// /*  */
-	HAL_UART_Receive_IT(&huart1, buf, uart1_rx_size);
 
+	/* 啟動MCU的UART1-DMA2傳輸+中斷 */
+	HAL_UART_Receive_DMA(&huart1,buf,uart1_rx_size);
 	/* 啟動TIM3(連中斷一併啟動) */
 	HAL_TIM_Base_Start_IT(&htim3);
 
 	/* Infinite Loop */
 	while (1)
 	{		
-		// for(int i=0;i<uart1_rx_size;i++)
-		// 	buf[i] = 0;
-		// HAL_UART_Receive(&huart1, buf, uart1_rx_size, 100);
 		// HAL_UART_Transmit(&huart1, buf, uart1_rx_size, 100);
 		HAL_GPIO_TogglePin(GPIO_Port_LED, GPIO_Pin_LED0);
 		delay_1ms(100);

@@ -6,5 +6,10 @@ debug tools         ：st-link-v3
 debug pkg           ：arm-none-eabi-gdb + openOCD + Cortex-Debug
 Brief               ：UART通訊專案
                     　LED0閃爍證明程式活著,LED1每正常接收到一筆資料反相一次
-                    
+
+第1階段：以一般阻塞方式在main-loop裡佔用時間輪詢察看有無接收,收發中斷DMA等均無。
+第2階段：以中斷方式自動跳進callback函數裡進行接收處理程序,無發送中斷,有接收中斷,無DMA。
+第3階段：以DMA方式自動搬移資料，搬運完成後產生中斷，資料長度固定。
+第4階段：以DMA方式自動搬移不定長度的資料，搬運完成後產生中斷。
+
 日後若有新增註解的話，後日補上

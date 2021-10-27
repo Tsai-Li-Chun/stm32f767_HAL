@@ -89,7 +89,7 @@ void MX_TIM3_Init(void)
 		Error_Handler();
 }	
 
-/** * @brief  callback in non-blocking mode
+/** * @brief  Timer3 Period-Elapsed callback in non-blocking mode
 	* @param TIM_HandleTypeDef*(pointer) 
 	* @return None 
 ** */
