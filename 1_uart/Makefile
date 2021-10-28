@@ -57,6 +57,7 @@ User/Src/main.c \
 User/Src/gpio.c \
 User/Src/tim.c \
 User/Src/uart.c \
+User/Src/AF_printf.c \
 User/Src/dma.c
 
 # ASM sources

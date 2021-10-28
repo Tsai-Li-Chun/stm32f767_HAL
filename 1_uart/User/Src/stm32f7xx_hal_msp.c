@@ -71,10 +71,10 @@ void HAL_MspInit(void)
 	/* USER CODE BEGIN MspInit 0 */
 	/* USER CODE END MspInit 0 */
 
+	/* 開啟電源模組工作時脈 */
 	__HAL_RCC_PWR_CLK_ENABLE();
+	/* 開啟systick工作時脈 */
 	__HAL_RCC_SYSCFG_CLK_ENABLE();
-
-	/* System interrupt init*/
 
 	/* USER CODE BEGIN MspInit 1 */
 	/* USER CODE END MspInit 1 */
@@ -136,10 +136,10 @@ void HAL_UART_MspInit(UART_HandleTypeDef* hu)
 		/* UART1-Tx的DMA通道設定 */
 		DMA_UART1TX_Init(hu);
 
-		// /* 設定CPU的USART1接收中斷優先度 */
-		// HAL_NVIC_SetPriority(USART1_IRQn, 0, 1);
-		// /* 開啟CPU的USART1中斷 */
-		// HAL_NVIC_EnableIRQ(USART1_IRQn);
+		/* 設定CPU的USART1接收中斷優先度 */
+		HAL_NVIC_SetPriority(USART1_IRQn, 0, 1);
+		/* 開啟CPU的USART1中斷 */
+		HAL_NVIC_EnableIRQ(USART1_IRQn);
 	}
 }
 

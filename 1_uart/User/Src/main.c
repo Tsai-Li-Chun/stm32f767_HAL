@@ -10,6 +10,7 @@
 /* User Includes --------------------------------------------*/
 /* User Includes Begin */
 #include "define_gpio_nickname.h"
+#include "AF_printf.h"
 #include "main.h"
 #include "gpio.h"
 #include "tim.h"
@@ -64,15 +65,20 @@ int main(void)
 	/* USART1初始化 */
 	MX_USART1_Init();
 
-	/* 啟動MCU的UART1-DMA2傳輸+中斷 */
-	HAL_UART_Receive_DMA(&huart1,buf,uart1_rx_size);
+	/* 啟動MCU的UART1-DMA2傳輸+傳輸完成中斷+IDLE中斷 */
+	HAL_UARTEx_ReceiveToIdle_DMA(&huart1,buf,uart1_rx_max_size);
 	/* 啟動TIM3(連中斷一併啟動) */
 	HAL_TIM_Base_Start_IT(&htim3);
 
 	/* Infinite Loop */
 	while (1)
-	{		
-		// HAL_UART_Transmit(&huart1, buf, uart1_rx_size, 100);
+	{
+		/* 打印資料 */
+		printf("%d,%s\n",(int)uart1_rx_effective_size,buf);
+		/* 清除舊資料 */
+		uart1_rx_effective_size = 0;
+		for(int i=0;i<uart1_rx_max_size;i++) buf[i] = 0;
+		/* LED0閃爍，代表程式運作 */
 		HAL_GPIO_TogglePin(GPIO_Port_LED, GPIO_Pin_LED0);
 		delay_1ms(100);
 	}

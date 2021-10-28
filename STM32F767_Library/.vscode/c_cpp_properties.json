@@ -1,0 +1,30 @@
+{ /* 各種參數設定 */
+    "configurations": [
+        {
+            /* 平台識別碼 */
+            "name": "Linux",
+            /* 編頭檔路徑設定 */
+            "includePath": [
+                "/home/tsailichun/stm32f767_HAL/1_uart/User/Inc",
+                "/home/tsailichun/stm32f767_HAL/STM32F767_Library/CMSIS",
+                "/home/tsailichun/stm32f767_HAL/STM32F767_Library/STM32F7xx_HAL_Driver/Inc",
+                "/home/tsailichun/stm32f767_HAL/STM32F767_Library/STM32F7xx_StartUp/Include"
+            ],
+            /* Define總宣告 */
+            "defines": [
+                "STM32F767xx",
+                "USE_HAL_DRIVER"
+            ],
+            /* 編譯器路徑 */
+            // "compilerPath": "D:/Program Files/MinGW/bin/g++.exe",
+            "compilerPath": "/usr/bin/gcc",
+            /* c語言版本指定 */
+            "cStandard": "c17",
+            /* c++版本指定 */
+            "cppStandard": "c++20",
+            /* 智能程式模式版本指定 */
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ], /* configurations END */
+    "version": 4 /* c_cpp_properties組態版本,必有 */
+}
