@@ -62,7 +62,7 @@ void DMA_UART1RX_Init(UART_HandleTypeDef* hu)
 	hdma_uart1_rx.Instance = DMA2_Stream2;
 	hdma_uart1_rx.Init.Channel = DMA_CHANNEL_4;
 	/* 設定DMA2S2C4工作模式為循環模式 */
-	hdma_uart1_rx.Init.Mode = DMA_CIRCULAR;
+	hdma_uart1_rx.Init.Mode = DMA_NORMAL;
 	/* 設定DMA2S2C4傳輸方向為外設to記憶體 */
 	hdma_uart1_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
 	/* 設定S2C4外設地址不加1 */
@@ -85,7 +85,7 @@ void DMA_UART1RX_Init(UART_HandleTypeDef* hu)
 	__HAL_LINKDMA(hu,hdmarx,hdma_uart1_rx);
 
 	/* 設定CPU的DMA2_Stream2(UART1-Rx)接收中斷優先度 */
-	HAL_NVIC_SetPriority(DMA2_Stream2_IRQn,0,1);
+	HAL_NVIC_SetPriority(DMA2_Stream2_IRQn,0,2);
 	/* 開啟CPU的DMA2_Stream2(UART1-Rx)中斷 */
 	HAL_NVIC_EnableIRQ(DMA2_Stream2_IRQn);
 }
@@ -103,7 +103,7 @@ void DMA_UART1TX_Init(UART_HandleTypeDef* hu)
 	hdma_uart1_tx.Instance = DMA2_Stream7;
 	hdma_uart1_tx.Init.Channel = DMA_CHANNEL_4;
 	/* 設定DMA2S7C4工作模式為循環模式 */
-	hdma_uart1_tx.Init.Mode = DMA_CIRCULAR;
+	hdma_uart1_tx.Init.Mode = DMA_NORMAL;
 	/* 設定DMA2S7C4傳輸方向為外設to記憶體 */
 	hdma_uart1_tx.Init.Direction = DMA_MEMORY_TO_PERIPH;
 	/* 設定S7C4外設地址不加1 */
@@ -126,7 +126,7 @@ void DMA_UART1TX_Init(UART_HandleTypeDef* hu)
 	__HAL_LINKDMA(hu,hdmatx,hdma_uart1_tx);
 
 	/* 設定CPU的DMA2_Stream7(UART1-Tx)接收中斷優先度 */
-	HAL_NVIC_SetPriority(DMA2_Stream7_IRQn,0,2);
+	HAL_NVIC_SetPriority(DMA2_Stream7_IRQn,0,3);
 	/* 開啟CPU的DMA2_Stream7(UART1-Tx)中斷 */
 	HAL_NVIC_EnableIRQ(DMA2_Stream7_IRQn);
 }

@@ -196,8 +196,8 @@ void TIM3_IRQHandler(void)
 	** */
 void USART1_IRQHandler(void)
 {
-	// /* USART1中斷請求處理函數 */
-	// HAL_UART_IRQHandler(&huart1);
+	/* USART1中斷請求處理函數 */
+	HAL_UART_IRQHandler(&huart1);
 }
 
 /** * @brief DMA2-Stream2 global interrupt

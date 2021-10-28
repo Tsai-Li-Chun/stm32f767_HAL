@@ -1,2 +1,3 @@
-0_template/build/*.*
-1_uart/build/*.*
+0_template/build/*
+1_uart/build/*
+

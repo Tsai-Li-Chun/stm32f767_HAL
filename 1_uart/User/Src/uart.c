@@ -32,7 +32,9 @@
 /* usart1設定用結構體 */
 UART_HandleTypeDef huart1;
 /* uart資料接收陣列 */
-uint8_t buf[uart1_rx_size] = {0};
+uint8_t buf[uart1_rx_max_size] = {0};
+/* uart1實際接收到的有效資料數 */
+uint16_t uart1_rx_effective_size = 0;
 
 /* Variables End */
 
@@ -87,16 +89,34 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *hu)
 	/* 若USART1產生計數中斷 */
 	if( hu->Instance == USART1 )
 	{
-		/* 將收到的資料傳給電腦打印 */
-		HAL_UART_Transmit(&huart1, buf, uart1_rx_size, 100);
-		/* 打印換行 */
-		buf[0] = '\n';
-		HAL_UART_Transmit(&huart1, &buf[0], 1, 100);
-		/* 清除資料陣列的舊資料 */
-		for(int i=0;i<uart1_rx_size;i++) buf[i] = 0;
 		/* LED1反相，方便觀察 */
 		HAL_GPIO_TogglePin(GPIO_Port_LED, GPIO_Pin_LED1);
 	}
+}
+
+/** * @brief  UART1 Rx Event Callback.
+	* @param hu UART_HandleTypeDef*
+	* @param size uint16_t,Number of data available
+	* @return None 
+** */
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef* hu, uint16_t size)
+{
+	/* 若USART1產生計數中斷 */
+	if( hu->Instance == USART1 )
+	{
+		/* 若資料數無超出最大數值-1 */
+		if( size < (uart1_rx_max_size-1) )
+		{
+			/* 有效資料數賦值 */
+			uart1_rx_effective_size = size;
+			/* 資料串結尾補上字串結束符 */
+			buf[uart1_rx_effective_size+1] = '\0';
+			/* LED1反相，方便觀察 */
+			HAL_GPIO_TogglePin(GPIO_Port_LED, GPIO_Pin_LED1);
+			/* 重新啟動MCU的UART1-DMA2傳輸+傳輸完成中斷+IDLE中斷 */
+			HAL_UARTEx_ReceiveToIdle_DMA(&huart1,buf,uart1_rx_max_size);
+		}
+	}	
 }
 
 

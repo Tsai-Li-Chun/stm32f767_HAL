@@ -1,12 +1,12 @@
 /** ******************************************************
-	* @file		uart.h
+	* @file		AF_printf.h
 	* @author	Tsai,Li-chun
 	******************************************************
 **	**/
 
 /* Define to prevent recursive inclusi ----------------------*/
-#ifndef __uart_H__
-#define __uart_H__
+#ifndef __AF_printf_H__
+#define __AF_printf_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -15,16 +15,17 @@ extern "C" {
 
 /* System Includes ------------------------------------------*/
 /* System Includes Begin */
-#include "stm32f7xx_hal.h"
+#include "uart.h"
+#include "stdio.h"
 /* System Includes End */
 /* User Includes --------------------------------------------*/
 /* User Includes Begin */
 /* User Includes End */
 
+// #pragma import(__use_no_semihosting)
 
 /* Define ---------------------------------------------------*/
 /* Define Begin */
-#define uart1_rx_max_size 255
 /* Define End */
 
 
@@ -35,28 +36,21 @@ extern "C" {
 
 /* Extern Variables -----------------------------------------*/
 /* Extern Variables Begin */
-
-/* uart1設定用結構體 */
-extern UART_HandleTypeDef huart1;
-/* uart資料接收陣列 */
-extern uint8_t buf[uart1_rx_max_size];
-/* uart1實際接收到的有效資料數 */
-extern uint16_t uart1_rx_effective_size;
-
 /* Extern Variables End */
 
 
 /* Function -------------------------------------------------*/
 /* Function Begin */
 
-void MX_USART1_Init(void);
+int _write(int, char*, int);
 
 /* Function End */
+
 
 
 #ifdef __cplusplus
 }
 #endif
-#endif /*__ uart_H__ */
+#endif /*__ AF_printf_H__ */
 
-/* ***** END OF uart.H ***** */
+/* ***** END OF AF_printf.H ***** */
