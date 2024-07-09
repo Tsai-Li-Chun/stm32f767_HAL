@@ -11,14 +11,20 @@
 		},
 		{
 			"path": "1_uart"
+		},
+		{
+			"path": "maca_pin_check",
 		}
 	],
-	"settings": 
-	{
-		"cortex-debug.variableUseNaturalFormat": false,
+	"settings": {
 		"files.associations": {
-			"uart.h": "c"
+			"stm32f4xx_hal.h": "c",
+			"stm32f4xx_hal_conf.h": "c",
+			"stm32f4xx_hal_rcc.h": "c",
+			"stm32f4xx_hal_def.h": "c",
+			"adc.h": "c",
+			"gpio.h": "c"
 		}
+		
 	}
-	
 }
