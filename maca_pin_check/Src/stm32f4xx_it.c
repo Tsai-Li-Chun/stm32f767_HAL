@@ -225,6 +225,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	/* Prevent unused argument(s) compilation warning */
 	UNUSED(htim);
 	
+	if(delay_time_1ms>0) delay_time_1ms--;
+	HAL_GPIO_TogglePin(led_green_GPIO_Port, led_green_Pin);
 }
 
 /* USER CODE END 1 */

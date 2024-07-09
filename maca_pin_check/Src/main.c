@@ -46,7 +46,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+int delay_time_1ms;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -98,7 +98,7 @@ int main(void)
 	MX_USART6_UART_Init();
 	MX_TIM3_Init();
 	/* USER CODE BEGIN 2 */
-
+	HAL_TIM_Base_Start_IT(&htim3);
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -108,6 +108,10 @@ int main(void)
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
+		HAL_GPIO_WritePin(GPIOD, led_orange_Pin|led_red_Pin|led_blue_Pin, GPIO_PIN_RESET);
+		delay_1ms(500);
+		HAL_GPIO_WritePin(GPIOD, led_orange_Pin|led_red_Pin|led_blue_Pin, GPIO_PIN_SET);
+		delay_1ms(500);
 	}
 	/* USER CODE END 3 */
 }
@@ -158,6 +162,17 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+/**
+ 	* @brief delay 1ms
+	* @param t delay time, unit:1ms
+	* @retval None
+*/
+void delay_1ms(int t)
+{
+	delay_time_1ms = t;
+	while(delay_time_1ms>0){}
+}
 
 /* USER CODE END 4 */
 

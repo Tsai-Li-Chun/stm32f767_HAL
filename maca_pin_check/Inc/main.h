@@ -46,14 +46,14 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-
+extern int delay_time_1ms;
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+void delay_1ms(int);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
