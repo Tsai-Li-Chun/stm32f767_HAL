@@ -57,6 +57,8 @@
 
 /* External variables --------------------------------------------------------*/
 extern TIM_HandleTypeDef htim3;
+extern UART_HandleTypeDef huart4;
+extern UART_HandleTypeDef huart5;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -213,6 +215,34 @@ void TIM3_IRQHandler(void)
 	/* USER CODE END TIM3_IRQn 1 */
 }
 
+/**
+	* @brief This function handles UART4 global interrupt.
+	*/
+void UART4_IRQHandler(void)
+{
+	/* USER CODE BEGIN UART4_IRQn 0 */
+
+	/* USER CODE END UART4_IRQn 0 */
+	HAL_UART_IRQHandler(&huart4);
+	/* USER CODE BEGIN UART4_IRQn 1 */
+
+	/* USER CODE END UART4_IRQn 1 */
+}
+
+/**
+	* @brief This function handles UART5 global interrupt.
+	*/
+void UART5_IRQHandler(void)
+{
+	/* USER CODE BEGIN UART5_IRQn 0 */
+
+	/* USER CODE END UART5_IRQn 0 */
+	HAL_UART_IRQHandler(&huart5);
+	/* USER CODE BEGIN UART5_IRQn 1 */
+
+	/* USER CODE END UART5_IRQn 1 */
+}
+
 /* USER CODE BEGIN 1 */
 
 /**
@@ -224,9 +254,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	/* Prevent unused argument(s) compilation warning */
 	UNUSED(htim);
-	
-	if(delay_time_1ms>0) delay_time_1ms--;
-	HAL_GPIO_TogglePin(led_green_GPIO_Port, led_green_Pin);
+	if( htim->Instance == TIM3 )
+	{
+		if(delay_time_1ms>0) delay_time_1ms--;
+		HAL_GPIO_TogglePin(GPIOD, led_blue_Pin);
+	}
 }
 
 /* USER CODE END 1 */

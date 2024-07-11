@@ -108,9 +108,9 @@ int main(void)
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		HAL_GPIO_WritePin(GPIOD, led_orange_Pin|led_red_Pin|led_blue_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, led_green_Pin, GPIO_PIN_SET);
 		delay_1ms(500);
-		HAL_GPIO_WritePin(GPIOD, led_orange_Pin|led_red_Pin|led_blue_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOD, led_green_Pin, GPIO_PIN_RESET);
 		delay_1ms(500);
 	}
 	/* USER CODE END 3 */
