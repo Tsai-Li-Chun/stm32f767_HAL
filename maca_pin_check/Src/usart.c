@@ -1,27 +1,31 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file    usart.c
-  * @brief   This file provides code for the configuration
-  *          of the USART instances.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2024 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+	******************************************************************************
+	* @file    usart.c
+	* @brief   This file provides code for the configuration
+	*          of the USART instances.
+	******************************************************************************
+	* @attention
+	*
+	* Copyright (c) 2024 STMicroelectronics.
+	* All rights reserved.
+	*
+	* This software is licensed under terms that can be found in the LICENSE file
+	* in the root directory of this software component.
+	* If no LICENSE file comes with this software, it is provided AS-IS.
+	*
+	******************************************************************************
+	*/
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
+#include "gpio.h"
 
+uint8_t usb_tx_buff[tx_buff_max_size];
+uint8_t uart_tx_buff[tx_buff_max_size];
+uint8_t uart_rx_buff[rx_buff_max_size];
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart4;
@@ -488,5 +492,51 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 }
 
 /* USER CODE BEGIN 1 */
+
+/**
+	* @brief  Tx Transfer completed callbacks.
+	* @param  huart  Pointer to a UART_HandleTypeDef structure that contains
+	*                the configuration information for the specified UART module.
+	* @retval None
+	*/
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+	/* Prevent unused argument(s) compilation warning */
+	UNUSED(huart);
+}
+/**
+	* @brief  Rx Transfer completed callbacks.
+	* @param  huart  Pointer to a UART_HandleTypeDef structure that contains
+	*                the configuration information for the specified UART module.
+	* @retval None
+	*/
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	/* Prevent unused argument(s) compilation warning */
+	UNUSED(huart);
+	HAL_GPIO_TogglePin(GPIOD, led_orange_Pin);
+	HAL_UART_Receive_IT(&huart4, uart_rx_buff, rx_buff_size);
+}
+/**
+	* @brief  Reception Event Callback (Rx event notification called after use of advanced reception service).
+	* @param  huart UART handle
+	* @param  Size  Number of data available in application reception buffer (indicates a position in
+	*               reception buffer until which, data are available)
+	* @retval None
+*/
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+{
+	/* Prevent unused argument(s) compilation warning */
+	UNUSED(huart);
+	UNUSED(Size);
+	if( huart->Instance==UART4 )
+	{
+		if( Size < rx_buff_max_size )
+		{
+			HAL_GPIO_TogglePin(GPIOD, led_orange_Pin);
+			HAL_UARTEx_ReceiveToIdle_IT(&huart4, uart_rx_buff, rx_buff_max_size);
+		}
+	}
+}
 
 /* USER CODE END 1 */

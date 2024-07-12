@@ -26,7 +26,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "usbd_cdc_if.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,7 +48,6 @@
 
 /* USER CODE BEGIN PV */
 int delay_time_1ms;
-uint8_t tx_buff[]={65,66,67,68,69,70,71,72,73,74}; //ABCDEFGHIJ in ASCII code
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -102,20 +101,29 @@ int main(void)
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
 	HAL_TIM_Base_Start_IT(&htim3);
+  HAL_UART_Receive_IT(&huart4, uart_rx_buff, rx_buff_size);
+  // HAL_UARTEx_ReceiveToIdle_IT(&huart4, uart_rx_buff, rx_buff_max_size);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+	for( uint8_t i=0; i<tx_buff_size; i++ )
+	{
+		usb_tx_buff[i] = i;
+	}
+
 	while (1)
 	{
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		HAL_UART_Transmit(&huart4, tx_buff, sizeof(tx_buff), 100);
-		HAL_GPIO_WritePin(GPIOD, led_green_Pin, GPIO_PIN_SET);
-		delay_1ms(500);
-		HAL_GPIO_WritePin(GPIOD, led_green_Pin, GPIO_PIN_RESET);
-		delay_1ms(500);
+		CDC_Transmit_FS(usb_tx_buff, tx_buff_size);
+		// HAL_GPIO_WritePin(GPIOD, led_red_Pin, GPIO_PIN_SET);
+		// HAL_UART_Transmit(&huart4, usb_tx_buff, usb_tx_buff_size, 100);
+		// HAL_UART_Transmit_IT(&huart4, usb_tx_buff, usb_tx_buff_size);		
+
+		delay_1ms(1000);
 	}
   /* USER CODE END 3 */
 }
@@ -207,7 +215,7 @@ void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
 	/* User can add his own implementation to report the file name and line number,
-		 ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+		ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

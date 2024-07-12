@@ -45,7 +45,10 @@ extern UART_HandleTypeDef huart3;
 extern UART_HandleTypeDef huart6;
 
 /* USER CODE BEGIN Private defines */
-
+#define tx_buff_max_size 1024
+#define tx_buff_size 3
+#define rx_buff_max_size 1024
+#define rx_buff_size 1
 /* USER CODE END Private defines */
 
 void MX_UART4_Init(void);
@@ -56,7 +59,9 @@ void MX_USART3_UART_Init(void);
 void MX_USART6_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
+extern uint8_t usb_tx_buff[tx_buff_max_size];
+extern uint8_t uart_tx_buff[tx_buff_max_size];
+extern uint8_t uart_rx_buff[rx_buff_max_size];
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
