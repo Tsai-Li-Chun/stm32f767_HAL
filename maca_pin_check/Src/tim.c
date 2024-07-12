@@ -45,7 +45,7 @@ void MX_TIM3_Init(void)
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim3.Init.Period = 999;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
   {
     Error_Handler();
@@ -107,5 +107,23 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 }
 
 /* USER CODE BEGIN 1 */
+
+/**
+	* @brief  Period elapsed callback in non-blocking mode
+	* @param  htim TIM handle
+	* @retval None
+	*/
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	/* Prevent unused argument(s) compilation warning */
+	UNUSED(htim);
+
+  /* If an interrupt occurs in TIM3 */
+	if( htim->Instance == TIM3 )
+	{
+		if(delay_time_1ms>0) delay_time_1ms--;
+		HAL_GPIO_TogglePin(GPIOD, led_blue_Pin);
+	}
+}
 
 /* USER CODE END 1 */
