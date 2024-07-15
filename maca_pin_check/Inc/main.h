@@ -57,6 +57,8 @@ void delay_1ms(int);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define user_Pin GPIO_PIN_0
+#define user_GPIO_Port GPIOA
 #define led_green_Pin GPIO_PIN_12
 #define led_green_GPIO_Port GPIOD
 #define led_orange_Pin GPIO_PIN_13

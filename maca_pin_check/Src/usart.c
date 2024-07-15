@@ -26,6 +26,7 @@
 uint8_t usb_tx_buff[tx_buff_max_size];
 uint8_t uart_tx_buff[tx_buff_max_size];
 uint8_t uart_rx_buff[rx_buff_max_size];
+uint8_t read_absolute_position[8] = {0x01, 0x03, 0x10, 0x04, 0x00, 0x02, 0x81, 0x0A};
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart4;
