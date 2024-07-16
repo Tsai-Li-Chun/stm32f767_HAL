@@ -26,7 +26,11 @@
 			"gpio.h": "c",
 			"usbd_cdc_if.h": "c",
 			"usbd_cdc.h": "c",
-			"usb_device.h": "c"
+			"usb_device.h": "c",
+			"usart.h": "c",
+			"delta_ld_xxxe_m22.h": "c",
+			"stm32f4xx_hal_uart.h": "c",
+			"cstdint": "c"
 		}
 		
 	}

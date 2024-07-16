@@ -27,6 +27,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
+#include "delta_LD_xxxE_M22.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -85,7 +86,7 @@ int main(void)
 	SystemClock_Config();
 
 	/* USER CODE BEGIN SysInit */
-
+	
 	/* USER CODE END SysInit */
 
 	/* Initialize all configured peripherals */
@@ -102,31 +103,27 @@ int main(void)
 	/* USER CODE BEGIN 2 */
 	HAL_TIM_Base_Start_IT(&htim3);
 	// HAL_UART_Receive_IT(&huart4, uart_rx_buff, rx_buff_size);
-	HAL_UARTEx_ReceiveToIdle_IT(&huart4, uart_rx_buff, rx_buff_max_size);
+	// HAL_UARTEx_ReceiveToIdle_IT(&huart4, uart_rx_buff, rx_buff_max_size);
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
-
-	for( uint8_t i=0; i<tx_buff_size; i++ )
-	{
-		usb_tx_buff[i] = i;
-	}
-
 	while (1)
 	{
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		if( HAL_GPIO_ReadPin(user_GPIO_Port,user_Pin) )
-		{
-			// CDC_Transmit_FS(usb_tx_buff, tx_buff_size);
-			// HAL_GPIO_WritePin(GPIOD, led_red_Pin, GPIO_PIN_SET);
-			// HAL_UART_Transmit(&huart4, usb_tx_buff, usb_tx_buff_size, 100);
-			HAL_UART_Transmit_IT(&huart4, read_absolute_position, 8);
-		}
+		// if( HAL_GPIO_ReadPin(user_GPIO_Port,user_Pin) )
+		// {	
+		// 	// calculate_CRC(read_absolute_position, 6);
+		// 	// CDC_Transmit_FS(read_absolute_position, 6);
+		// 	// CDC_Receive_FS(read_absolute_position, 6);
+		// 	// HAL_GPIO_WritePin(GPIOD, led_red_Pin, GPIO_PIN_SET);
+		// 	// HAL_UART_Transmit(&huart4, usb_tx_buff, usb_tx_buff_size, 100);
+		// 	HAL_UART_Transmit_IT(&huart4, read_absolute_position, 8);
+		// }
 
-		delay_1ms(1000);
+		// delay_1ms(1000);
 	}
 	/* USER CODE END 3 */
 }
