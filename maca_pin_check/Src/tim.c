@@ -129,11 +129,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		HAL_GPIO_TogglePin(GPIOD, led_blue_Pin);
 		/* send command to read absolute position of six legs */
 		// HAL_UART_Transmit_IT(&huart1, read_absolute_position, 8);
-		for(for_i=0; for_i<2; for_i++)
+		for(for_i=0; for_i<6; for_i++)
 		{
 			tx_buff_size = read_AbsolutePosition(for_i);
-			if(tx_buff_size == command_length)
-				HAL_UART_Transmit_IT(huartX[for_i], uart_tx_buff, tx_buff_size);
+			if((tx_buff_size%command_length)==0)
+				HAL_UART_Transmit_IT(huartX[for_i], uart_tx_buff+tx_buff_size, command_length);
 			else
 			{
 				/* To be added */

@@ -133,7 +133,7 @@ extern "C" {
 
 typedef enum LEG
 {
-    leg1=1, leg2, leg3, leg4, leg5, leg6
+    leg1=0, leg2, leg3, leg4, leg5, leg6
 } leg_id;
 
 /* Extern Typedef End */
@@ -175,7 +175,7 @@ void read_FirmwareVer(void);
 void read_DOStatus(void);
 void read_DIStatus(void);
 
-void set_DeviceID(void);
+uint16_t set_DeviceID(uint8_t old_id, uint8_t new_id);
 void set_BaudRate(void);
 void set_Format(void);
 void set_SetZeroSW(void);

@@ -7,7 +7,6 @@
 
 /* System Includes ------------------------------------------*/
 /* System Includes Begin */
- #include <assert.h>
 /* System Includes End */
 /* User Includes --------------------------------------------*/
 /* User Includes Begin */
@@ -162,9 +161,14 @@ void read_DIStatus(void)
 
 }
 
-void set_DeviceID(void)
+/** * @brief set new ID for LD-xxxE-M22.
+ 	* @param old_id(uint8_t) old id
+ 	* @param new_id(uint8_t) new id
+ 	* @return none
+**/
+uint16_t set_DeviceID(uint8_t old_id, uint8_t new_id)
 {
-
+	return populate_protocol(old_id, __cmd_fc_write__, __adr_deviceID__, new_id);
 }
 void set_BaudRate(void)
 {
@@ -240,7 +244,7 @@ void set_RestoreFactory(void)
  	* @param fc(uint8_t) function code, read 0x03, write 0x06, byte2
  	* @param adr(uint32_t) start address, byte3-4
  	* @param len_or_data(uint16_t) whem read it's len, when write it's data, byte5-6
- 	* @return Non 8 is fail, 8 is success indicates data length
+ 	* @return index tab
 **/
 uint16_t populate_protocol(uint8_t id, uint8_t fc, uint32_t adr, uint16_t len_or_data)
 {
@@ -257,15 +261,16 @@ uint16_t populate_protocol(uint8_t id, uint8_t fc, uint32_t adr, uint16_t len_or
 	// if( (fc==__cmd_fc_read__) && (len_or_data!=len_tmp) )  return 2;
 
 	/* populate uart_tx_buff(protocol) */
-	uart_tx_buff[0] = (uint8_t)(id+1);
-	uart_tx_buff[1] = fc;
-	uart_tx_buff[2] = adr_H;
-	uart_tx_buff[3] = adr_L;
-	uart_tx_buff[4] = (uint8_t)((len_or_data&0xFF00)>>8);
-	uart_tx_buff[5] = (uint8_t)(len_or_data&0x00FF);
-	calculate_CRC(uart_tx_buff, 6);
+	tx_buff_size = id * command_length;
+	uart_tx_buff[tx_buff_size+0] = id+1;
+	uart_tx_buff[tx_buff_size+1] = fc;
+	uart_tx_buff[tx_buff_size+2] = adr_H;
+	uart_tx_buff[tx_buff_size+3] = adr_L;
+	uart_tx_buff[tx_buff_size+4] = (uint8_t)((len_or_data&0xFF00)>>8);
+	uart_tx_buff[tx_buff_size+5] = (uint8_t)(len_or_data&0x00FF);
+	calculate_CRC(uart_tx_buff, tx_buff_size);
 	// HAL_UART_Transmit_IT(&huart1, uart_tx_buff, 8);
-	return command_length;
+	return tx_buff_size;
 }
 
 /** * @brief Generate the CRC code according to 
@@ -277,11 +282,11 @@ uint16_t populate_protocol(uint8_t id, uint8_t fc, uint32_t adr, uint16_t len_or
 uint16_t calculate_CRC(uint8_t* data, uint16_t size)
 {
 	uint16_t crc=0xFFFF;
-	uint16_t size_tmp=0;
+	uint16_t size_tmp=size+command_length-2;
 
-	while( size_tmp < size )
+	while( size < size_tmp )
 	{
-		crc = crc ^ data[size_tmp];
+		crc = crc ^ data[size];
 		for(uint8_t i=0; i<8; i++)
 		{
 			if( crc & 0x0001 )
@@ -292,10 +297,10 @@ uint16_t calculate_CRC(uint8_t* data, uint16_t size)
 			else
 				crc = crc >> 1;
 		}
-		size_tmp++;
+		size++;
 	}	
-	uart_tx_buff[6] = (uint8_t)(crc&0x00FF);
-	uart_tx_buff[7] = (uint8_t)((crc&0xFF00)>>8);
+	uart_tx_buff[size_tmp] = (uint8_t)(crc&0x00FF);
+	uart_tx_buff[size_tmp+1] = (uint8_t)((crc&0xFF00)>>8);
 	return crc;
 }
 /** * @brief 
