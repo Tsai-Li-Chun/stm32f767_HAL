@@ -22,13 +22,16 @@
 
 /* USER CODE BEGIN 0 */
 #include "gpio.h"
+#include "usbd_cdc_if.h"
 #include "delta_LD_xxxE_M22.h"
 
+uint16_t tx_buff_size = 0;
+uint16_t rx_buff_size = 0;
 uint8_t usb_tx_buff[tx_buff_max_size];
 uint8_t uart_tx_buff[tx_buff_max_size];
 uint8_t uart_rx_buff[rx_buff_max_size];
+uint8_t read_absolute_position[8] = {0x01, 0x03, 0x10, 0x04, 0x00, 0x02, 0x81, 0x0A};
 // uint8_t read_absolute_position[8] = {0x01, 0x06, 0x10, 0x00, 0x00, 0x01, 0x1D, 0x0A};
-uint8_t read_absolute_position[8] = {0x01, 0x06, 0x10, 0x00, 0x00, 0x01, 0x4C, 0xCA};
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart4;
@@ -37,6 +40,8 @@ UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 UART_HandleTypeDef huart6;
+UART_HandleTypeDef* huartX[Number_of_LDxxxEM22]={&huart1, &huart2, &huart3, &huart4, &huart5, &huart6};
+// UART_HandleTypeDef* huartX[Number_of_LDxxxEM22];
 
 /* UART4 init function */
 void MX_UART4_Init(void)
@@ -70,7 +75,7 @@ void MX_UART4_Init(void)
 	{
 		Error_Handler();
 	}
-	
+	// huartX[leg4] = &huart4;
 	/* USER CODE END UART4_Init 2 */
 
 }
@@ -99,6 +104,14 @@ void MX_UART5_Init(void)
 	}
 	/* USER CODE BEGIN UART5_Init 2 */
 
+	/* use general settings within "delta_LD_xxxE_M22.h" to override,
+	   without needing to open MX for rechanges. */
+	delta_LD_xxxE_M22_uart_setup(&huart5);
+	if (HAL_UART_Init(&huart5) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	// huartX[leg5] = &huart5;
 	/* USER CODE END UART5_Init 2 */
 
 }
@@ -128,6 +141,14 @@ void MX_USART1_UART_Init(void)
 	}
 	/* USER CODE BEGIN USART1_Init 2 */
 
+	/* use general settings within "delta_LD_xxxE_M22.h" to override,
+	   without needing to open MX for rechanges. */
+	delta_LD_xxxE_M22_uart_setup(&huart1);
+	if (HAL_UART_Init(&huart1) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	
 	/* USER CODE END USART1_Init 2 */
 
 }
@@ -157,6 +178,14 @@ void MX_USART2_UART_Init(void)
 	}
 	/* USER CODE BEGIN USART2_Init 2 */
 
+	/* use general settings within "delta_LD_xxxE_M22.h" to override,
+	   without needing to open MX for rechanges. */
+	delta_LD_xxxE_M22_uart_setup(&huart2);
+	if (HAL_UART_Init(&huart2) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	
 	/* USER CODE END USART2_Init 2 */
 
 }
@@ -186,6 +215,14 @@ void MX_USART3_UART_Init(void)
 	}
 	/* USER CODE BEGIN USART3_Init 2 */
 
+	/* use general settings within "delta_LD_xxxE_M22.h" to override,
+	   without needing to open MX for rechanges. */
+	delta_LD_xxxE_M22_uart_setup(&huart3);
+	if (HAL_UART_Init(&huart3) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	
 	/* USER CODE END USART3_Init 2 */
 
 }
@@ -215,6 +252,14 @@ void MX_USART6_UART_Init(void)
 	}
 	/* USER CODE BEGIN USART6_Init 2 */
 
+	/* use general settings within "delta_LD_xxxE_M22.h" to override,
+	   without needing to open MX for rechanges. */
+	delta_LD_xxxE_M22_uart_setup(&huart6);
+	if (HAL_UART_Init(&huart6) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	
 	/* USER CODE END USART6_Init 2 */
 
 }
@@ -305,6 +350,9 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
 		GPIO_InitStruct.Alternate = GPIO_AF7_USART1;
 		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+		/* USART1 interrupt Init */
+		HAL_NVIC_SetPriority(USART1_IRQn, 4, 0);
+		HAL_NVIC_EnableIRQ(USART1_IRQn);
 	/* USER CODE BEGIN USART1_MspInit 1 */
 
 	/* USER CODE END USART1_MspInit 1 */
@@ -329,6 +377,9 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
 		GPIO_InitStruct.Alternate = GPIO_AF7_USART2;
 		HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+		/* USART2 interrupt Init */
+		HAL_NVIC_SetPriority(USART2_IRQn, 5, 0);
+		HAL_NVIC_EnableIRQ(USART2_IRQn);
 	/* USER CODE BEGIN USART2_MspInit 1 */
 
 	/* USER CODE END USART2_MspInit 1 */
@@ -353,6 +404,9 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
 		GPIO_InitStruct.Alternate = GPIO_AF7_USART3;
 		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+		/* USART3 interrupt Init */
+		HAL_NVIC_SetPriority(USART3_IRQn, 6, 0);
+		HAL_NVIC_EnableIRQ(USART3_IRQn);
 	/* USER CODE BEGIN USART3_MspInit 1 */
 
 	/* USER CODE END USART3_MspInit 1 */
@@ -377,6 +431,9 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
 		GPIO_InitStruct.Alternate = GPIO_AF8_USART6;
 		HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
+		/* USART6 interrupt Init */
+		HAL_NVIC_SetPriority(USART6_IRQn, 7, 0);
+		HAL_NVIC_EnableIRQ(USART6_IRQn);
 	/* USER CODE BEGIN USART6_MspInit 1 */
 
 	/* USER CODE END USART6_MspInit 1 */
@@ -442,6 +499,8 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 		*/
 		HAL_GPIO_DeInit(GPIOB, GPIO_PIN_6|GPIO_PIN_7);
 
+		/* USART1 interrupt Deinit */
+		HAL_NVIC_DisableIRQ(USART1_IRQn);
 	/* USER CODE BEGIN USART1_MspDeInit 1 */
 
 	/* USER CODE END USART1_MspDeInit 1 */
@@ -460,6 +519,8 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 		*/
 		HAL_GPIO_DeInit(GPIOA, GPIO_PIN_2|GPIO_PIN_3);
 
+		/* USART2 interrupt Deinit */
+		HAL_NVIC_DisableIRQ(USART2_IRQn);
 	/* USER CODE BEGIN USART2_MspDeInit 1 */
 
 	/* USER CODE END USART2_MspDeInit 1 */
@@ -478,6 +539,8 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 		*/
 		HAL_GPIO_DeInit(GPIOB, GPIO_PIN_10|GPIO_PIN_11);
 
+		/* USART3 interrupt Deinit */
+		HAL_NVIC_DisableIRQ(USART3_IRQn);
 	/* USER CODE BEGIN USART3_MspDeInit 1 */
 
 	/* USER CODE END USART3_MspDeInit 1 */
@@ -496,6 +559,8 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 		*/
 		HAL_GPIO_DeInit(GPIOC, GPIO_PIN_6|GPIO_PIN_7);
 
+		/* USART6 interrupt Deinit */
+		HAL_NVIC_DisableIRQ(USART6_IRQn);
 	/* USER CODE BEGIN USART6_MspDeInit 1 */
 
 	/* USER CODE END USART6_MspDeInit 1 */
@@ -514,8 +579,20 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
 	/* Prevent unused argument(s) compilation warning */
 	UNUSED(huart);
-	HAL_GPIO_TogglePin(GPIOD, led_red_Pin);
-	HAL_UARTEx_ReceiveToIdle_IT(&huart4, uart_rx_buff, rx_buff_max_size);
+	if( huart->Instance == USART1 )
+	{
+		HAL_GPIO_TogglePin(GPIOD, led_green_Pin);
+	}
+	else if( huart->Instance == USART2 )
+	{
+		HAL_GPIO_TogglePin(GPIOD, led_orange_Pin);
+	}
+	else if( huart->Instance == USART3 )
+	{
+		HAL_GPIO_TogglePin(GPIOD, led_red_Pin);
+	}
+
+	HAL_UARTEx_ReceiveToIdle_IT(huart, uart_rx_buff, rx_buff_max_size);
 }
 /**
 	* @brief  Rx Transfer completed callbacks.
@@ -527,7 +604,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	/* Prevent unused argument(s) compilation warning */
 	UNUSED(huart);
-	if( huart->Instance == UART4 )
+	if( huart->Instance == USART1 )
 	{
 		HAL_GPIO_TogglePin(GPIOD, led_orange_Pin);
 		// HAL_UART_Receive_IT(&huart4, uart_rx_buff, rx_buff_size);
@@ -545,11 +622,12 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 	/* Prevent unused argument(s) compilation warning */
 	UNUSED(huart);
 	UNUSED(Size);
-	if( huart->Instance==UART4 )
+	if( huart->Instance==USART1 )
 	{
-		if( Size < rx_buff_max_size )
+		if( (Size<rx_buff_max_size) )
 		{
-			HAL_GPIO_TogglePin(GPIOD, led_orange_Pin);
+			// HAL_GPIO_TogglePin(GPIOD, led_orange_Pin);
+			// CDC_Transmit_FS(usb_tx_buff, 7);
 			// HAL_UARTEx_ReceiveToIdle_IT(&huart4, uart_rx_buff, rx_buff_max_size);
 		}
 	}

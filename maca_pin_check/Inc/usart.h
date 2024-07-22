@@ -29,7 +29,7 @@ extern "C" {
 #include "main.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "delta_LD_xxxE_M22.h"
 /* USER CODE END Includes */
 
 extern UART_HandleTypeDef huart4;
@@ -46,9 +46,7 @@ extern UART_HandleTypeDef huart6;
 
 /* USER CODE BEGIN Private defines */
 #define tx_buff_max_size 1024
-#define tx_buff_size 3
 #define rx_buff_max_size 1024
-#define rx_buff_size 1
 /* USER CODE END Private defines */
 
 void MX_UART4_Init(void);
@@ -59,10 +57,13 @@ void MX_USART3_UART_Init(void);
 void MX_USART6_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+extern uint16_t tx_buff_size;
+extern uint16_t rx_buff_size;
 extern uint8_t usb_tx_buff[tx_buff_max_size];
 extern uint8_t uart_tx_buff[tx_buff_max_size];
 extern uint8_t uart_rx_buff[rx_buff_max_size];
 extern uint8_t read_absolute_position[8];
+extern UART_HandleTypeDef* huartX[Number_of_LDxxxEM22];
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
