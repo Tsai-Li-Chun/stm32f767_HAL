@@ -28,6 +28,10 @@
 
 /* Variables ------------------------------------------------*/
 /* Variables Begin */
+
+/* all MACA 6 legs information obtained flag */
+uint8_t maca_all_rx_flag;
+
 /* Variables End */
 
 
@@ -250,13 +254,14 @@ uint16_t populate_protocol(uint8_t id, uint8_t fc, uint32_t adr, uint16_t len_or
 {
 	uint8_t adr_H = (uint8_t)((adr&0xFF000000)>>24);
 	uint8_t adr_L = (uint8_t)((adr&0x00FF0000)>>16);
-	uint8_t fc_tmp =(uint8_t)(adr&0x00000005);
+	uint8_t fc_tmp =(uint8_t)(adr&0x00000007);
 	uint16_t len_tmp =(uint16_t)((adr&0x0000FF00)>>8);
 
-	// /* check if the specified legs id meets the requirements */
-	// if( (id<1) || (id>Number_of_LDxxxEM22) ) return 0;
-	// /* check if fc meets the requirements */
-	// if( ((fc!=__cmd_fc_read__)&&(fc!=__cmd_fc_write__)) || !(fc&fc_tmp) ) return 1;
+	/* check if the specified legs id meets the requirements */
+	if( id>Number_of_LDxxxEM22 ) return 0;
+	/* check if fc meets the requirements */
+	if( fc_tmp == 0 ) return 1;
+	if( (fc_tmp&fc) == 0 ) return 1;
 	// /* check if len meets the requirements */
 	// if( (fc==__cmd_fc_read__) && (len_or_data!=len_tmp) )  return 2;
 
@@ -266,13 +271,24 @@ uint16_t populate_protocol(uint8_t id, uint8_t fc, uint32_t adr, uint16_t len_or
 	uart_tx_buff[tx_buff_size+1] = fc;
 	uart_tx_buff[tx_buff_size+2] = adr_H;
 	uart_tx_buff[tx_buff_size+3] = adr_L;
-	uart_tx_buff[tx_buff_size+4] = (uint8_t)((len_or_data&0xFF00)>>8);
-	uart_tx_buff[tx_buff_size+5] = (uint8_t)(len_or_data&0x00FF);
+	uart_tx_buff[tx_buff_size+4] = (uint8_t)((len_tmp&0xFF00)>>8);
+	uart_tx_buff[tx_buff_size+5] = (uint8_t)(len_tmp&0x00FF);
 	calculate_CRC(uart_tx_buff, tx_buff_size);
 	// HAL_UART_Transmit_IT(&huart1, uart_tx_buff, 8);
 	return tx_buff_size;
 }
+/** * @brief decode the data received via UART interrupt.
+ 	* @param leg_id(uint8_t) LD_xxxE_M22 id, byte1
+ 	* @return execution result code
+**/
+uint16_t decode_protocol(uint8_t id)
+{
+	// uint8_t index = id*response_max_length;
+	// uint8_t leg_id = uart_rx_buff[index];
+	// if( (id+1) != leg_id )	return 1;
 
+	return 0;
+}
 /** * @brief Generate the CRC code according to 
  * 			 Delta's LD-xxxE-M22 CRC calculation rules
  	* @param data(uint8_t*) original data without the appended CRC code

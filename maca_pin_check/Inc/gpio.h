@@ -29,10 +29,15 @@ extern "C" {
 #include "main.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "delta_LD_xxxE_M22.h"
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */
+
+extern GPIO_TypeDef* tx_gpio_debug_port[Number_of_LDxxxEM22];
+extern GPIO_TypeDef* rx_gpio_debug_port[Number_of_LDxxxEM22];
+extern uint16_t      tx_gpio_debug_pin[Number_of_LDxxxEM22];
+extern uint16_t      rx_gpio_debug_pin[Number_of_LDxxxEM22];
 
 /* USER CODE END Private defines */
 

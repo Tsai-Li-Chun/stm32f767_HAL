@@ -22,9 +22,10 @@
 
 /* USER CODE BEGIN 0 */
 #include "usart.h"
+#include "gpio.h"
 #include "delta_LD_xxxE_M22.h"
 
-uint8_t for_i = 0;
+uint8_t for_tim3 = 0;
 /* USER CODE END 0 */
 
 TIM_HandleTypeDef htim3;
@@ -113,7 +114,7 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 
 /**
 	* @brief  Period elapsed callback in non-blocking mode
-			  * Period elapsed : 5ms
+				* Period elapsed : 5ms
 	* @param  htim TIM handle
 	* @retval None
 	*/
@@ -125,15 +126,20 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	/* If an interrupt occurs in TIM3 */
 	if( htim->Instance == TIM3 )
 	{
+		maca_all_rx_flag = 0;
 		if(delay_time_1ms>0) delay_time_1ms--;
 		HAL_GPIO_TogglePin(GPIOD, led_blue_Pin);
+		HAL_GPIO_WritePin(GPIOD, led_red_Pin, GPIO_PIN_RESET);
 		/* send command to read absolute position of six legs */
 		// HAL_UART_Transmit_IT(&huart1, read_absolute_position, 8);
-		for(for_i=0; for_i<6; for_i++)
+		for(for_tim3=0; for_tim3<Number_of_LDxxxEM22; for_tim3++)
 		{
-			tx_buff_size = read_AbsolutePosition(for_i);
+			tx_buff_size = read_AbsolutePosition(for_tim3);
 			if((tx_buff_size%command_length)==0)
-				HAL_UART_Transmit_IT(huartX[for_i], uart_tx_buff+tx_buff_size, command_length);
+			{
+				HAL_UART_Transmit_IT(huartX[for_tim3], uart_tx_buff+tx_buff_size, command_length);
+				HAL_GPIO_WritePin(tx_gpio_debug_port[for_tim3], tx_gpio_debug_pin[for_tim3], GPIO_PIN_SET);
+			}
 			else
 			{
 				/* To be added */

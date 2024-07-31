@@ -27,6 +27,7 @@ extern "C" {
 
 #define Number_of_LDxxxEM22 6
 #define command_length 8
+#define response_max_length 100
 
 /* define Delta LD-xxxE-M22 communication parameter */
 #define __Model__ LD_100E_M22
@@ -131,16 +132,21 @@ extern "C" {
 /* Extern Typedef -------------------------------------------*/
 /* Extern Typedef Begin */
 
-typedef enum LEG
-{
-    leg1=0, leg2, leg3, leg4, leg5, leg6
-} leg_id;
+// /* declare the 6 legs as enum constants. */
+// typedef enum LEG
+// {
+//     leg1=0, leg2, leg3, leg4, leg5, leg6
+// } leg_id;
 
 /* Extern Typedef End */
 
 
 /* Extern Variables -----------------------------------------*/
 /* Extern Variables Begin */
+
+/* all MACA 6 legs information obtained flag */
+extern uint8_t maca_all_rx_flag;
+
 /* Extern Variables End */
 
 
@@ -195,6 +201,7 @@ void set_DetectionOut(void);
 void set_RestoreFactory(void);
 
 uint16_t populate_protocol(uint8_t id, uint8_t fc, uint32_t adr, uint16_t len_or_data);
+uint16_t decode_protocol(uint8_t id);
 uint16_t calculate_CRC(uint8_t* data, uint16_t size);
 void verify_CRC(void);
 

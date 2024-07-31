@@ -25,6 +25,7 @@
 #include "usbd_cdc_if.h"
 #include "delta_LD_xxxE_M22.h"
 
+uint8_t for_tx,for_rx;
 uint16_t tx_buff_size = 0;
 uint16_t rx_buff_size = 0;
 uint8_t usb_tx_buff[tx_buff_max_size];
@@ -41,8 +42,6 @@ UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 UART_HandleTypeDef huart6;
 UART_HandleTypeDef* huartX[Number_of_LDxxxEM22]={&huart1, &huart2, &huart3, &huart4, &huart5, &huart6};
-// UART_HandleTypeDef* huartX[Number_of_LDxxxEM22];
-
 /* UART4 init function */
 void MX_UART4_Init(void)
 {
@@ -69,7 +68,7 @@ void MX_UART4_Init(void)
 	/* USER CODE BEGIN UART4_Init 2 */
 
 	/* use general settings within "delta_LD_xxxE_M22.h" to override,
-	   without needing to open MX for rechanges. */
+		 without needing to open MX for rechanges. */
 	delta_LD_xxxE_M22_uart_setup(&huart4);
 	if (HAL_UART_Init(&huart4) != HAL_OK)
 	{
@@ -105,7 +104,7 @@ void MX_UART5_Init(void)
 	/* USER CODE BEGIN UART5_Init 2 */
 
 	/* use general settings within "delta_LD_xxxE_M22.h" to override,
-	   without needing to open MX for rechanges. */
+		 without needing to open MX for rechanges. */
 	delta_LD_xxxE_M22_uart_setup(&huart5);
 	if (HAL_UART_Init(&huart5) != HAL_OK)
 	{
@@ -142,7 +141,7 @@ void MX_USART1_UART_Init(void)
 	/* USER CODE BEGIN USART1_Init 2 */
 
 	/* use general settings within "delta_LD_xxxE_M22.h" to override,
-	   without needing to open MX for rechanges. */
+		 without needing to open MX for rechanges. */
 	delta_LD_xxxE_M22_uart_setup(&huart1);
 	if (HAL_UART_Init(&huart1) != HAL_OK)
 	{
@@ -179,7 +178,7 @@ void MX_USART2_UART_Init(void)
 	/* USER CODE BEGIN USART2_Init 2 */
 
 	/* use general settings within "delta_LD_xxxE_M22.h" to override,
-	   without needing to open MX for rechanges. */
+		 without needing to open MX for rechanges. */
 	delta_LD_xxxE_M22_uart_setup(&huart2);
 	if (HAL_UART_Init(&huart2) != HAL_OK)
 	{
@@ -216,7 +215,7 @@ void MX_USART3_UART_Init(void)
 	/* USER CODE BEGIN USART3_Init 2 */
 
 	/* use general settings within "delta_LD_xxxE_M22.h" to override,
-	   without needing to open MX for rechanges. */
+		 without needing to open MX for rechanges. */
 	delta_LD_xxxE_M22_uart_setup(&huart3);
 	if (HAL_UART_Init(&huart3) != HAL_OK)
 	{
@@ -253,7 +252,7 @@ void MX_USART6_UART_Init(void)
 	/* USER CODE BEGIN USART6_Init 2 */
 
 	/* use general settings within "delta_LD_xxxE_M22.h" to override,
-	   without needing to open MX for rechanges. */
+		 without needing to open MX for rechanges. */
 	delta_LD_xxxE_M22_uart_setup(&huart6);
 	if (HAL_UART_Init(&huart6) != HAL_OK)
 	{
@@ -579,20 +578,19 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
 	/* Prevent unused argument(s) compilation warning */
 	UNUSED(huart);
-	if( huart->Instance == USART1 )
-	{
-		HAL_GPIO_TogglePin(GPIOD, led_green_Pin);
-	}
-	else if( huart->Instance == USART2 )
-	{
-		HAL_GPIO_TogglePin(GPIOD, led_orange_Pin);
-	}
-	else if( huart->Instance == USART3 )
-	{
-		HAL_GPIO_TogglePin(GPIOD, led_red_Pin);
-	}
 
-	HAL_UARTEx_ReceiveToIdle_IT(huart, uart_rx_buff, rx_buff_max_size);
+	/* poll to check which of UART1-6 has completed Tx */
+	for(for_tx=0; for_tx<Number_of_LDxxxEM22; for_tx++)
+	{
+		if(huart->Instance == huartX[for_tx]->Instance)
+		{
+			/* enable corresponding UARTx RxIDLE interrupt */
+			HAL_UARTEx_ReceiveToIdle_IT(huart, uart_rx_buff+(for_tx*response_max_length), response_max_length);
+			HAL_GPIO_WritePin(tx_gpio_debug_port[for_tx], tx_gpio_debug_pin[for_tx], GPIO_PIN_RESET);
+			/* break for loop */
+			for_tx = response_max_length;
+		}
+	}
 }
 /**
 	* @brief  Rx Transfer completed callbacks.
@@ -604,11 +602,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	/* Prevent unused argument(s) compilation warning */
 	UNUSED(huart);
-	if( huart->Instance == USART1 )
-	{
-		HAL_GPIO_TogglePin(GPIOD, led_orange_Pin);
-		// HAL_UART_Receive_IT(&huart4, uart_rx_buff, rx_buff_size);
-	}
 }
 /**
 	* @brief  Reception Event Callback (Rx event notification called after use of advanced reception service).
@@ -622,13 +615,25 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 	/* Prevent unused argument(s) compilation warning */
 	UNUSED(huart);
 	UNUSED(Size);
-	if( huart->Instance==USART1 )
+
+	/* poll to check which of UART1-6 has completed RxIDLE */
+	for(for_rx=0; for_rx<Number_of_LDxxxEM22; for_rx++)
 	{
-		if( (Size<rx_buff_max_size) )
+		if(huart->Instance == huartX[for_rx]->Instance)
 		{
-			// HAL_GPIO_TogglePin(GPIOD, led_orange_Pin);
-			// CDC_Transmit_FS(usb_tx_buff, 7);
-			// HAL_UARTEx_ReceiveToIdle_IT(&huart4, uart_rx_buff, rx_buff_max_size);
+			HAL_GPIO_WritePin(rx_gpio_debug_port[for_rx], rx_gpio_debug_pin[for_rx], GPIO_PIN_SET);
+			/* check if the data length is correct (noise prevention) */
+			if( (Size>=(command_length-2)) )
+			{	/* data length correct, set the corresponding flag for UARTx */
+				maca_all_rx_flag |= 0x1<<for_rx;
+				if(maca_all_rx_flag == 0x3F)
+					HAL_GPIO_WritePin(GPIOD, led_red_Pin, GPIO_PIN_SET);
+			}
+			else	/* data length is incorrect, ignore the data and restart the RxIDLE interrupt */
+				HAL_UARTEx_ReceiveToIdle_IT(huart, uart_rx_buff+(for_rx*response_max_length), response_max_length);
+			HAL_GPIO_WritePin(rx_gpio_debug_port[for_rx], rx_gpio_debug_pin[for_rx], GPIO_PIN_RESET);
+			/* break for loop */
+			for_rx = response_max_length;
 		}
 	}
 }
