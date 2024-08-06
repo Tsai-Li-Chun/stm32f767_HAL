@@ -100,8 +100,10 @@ int main(void)
 	MX_USART6_UART_Init();
 	MX_TIM3_Init();
 	MX_USB_DEVICE_Init();
+	MX_TIM4_Init();
 	/* USER CODE BEGIN 2 */
 	HAL_TIM_Base_Start_IT(&htim3);
+	// HAL_TIM_Base_Start_IT(&htim4);
 	// HAL_UART_Receive_IT(&huart4, uart_rx_buff, rx_buff_size);
 	// HAL_UARTEx_ReceiveToIdle_IT(&huart4, uart_rx_buff, rx_buff_max_size);
 	/* USER CODE END 2 */
@@ -110,9 +112,9 @@ int main(void)
 	/* USER CODE BEGIN WHILE */
 	while (1)
 	{
-	/* USER CODE END WHILE */
+		/* USER CODE END WHILE */
 
-	/* USER CODE BEGIN 3 */
+		/* USER CODE BEGIN 3 */
 		// if( HAL_GPIO_ReadPin(user_GPIO_Port,user_Pin) )
 		// {	
 		// 	// calculate_CRC(read_absolute_position, 6);
@@ -155,7 +157,7 @@ void SystemClock_Config(void)
 	RCC_OscInitStruct.PLL.PLLQ = 7;
 	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
 	{
-	Error_Handler();
+		Error_Handler();
 	}
 
 	/** Initializes the CPU, AHB and APB buses clocks
@@ -169,7 +171,7 @@ void SystemClock_Config(void)
 
 	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
 	{
-	Error_Handler();
+		Error_Handler();
 	}
 }
 

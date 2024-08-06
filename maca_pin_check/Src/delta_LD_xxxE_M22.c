@@ -30,7 +30,8 @@
 /* Variables Begin */
 
 /* all MACA 6 legs information obtained flag */
-uint8_t maca_all_rx_flag;
+uint8_t maca_rx_flag;
+uint8_t debug_flag = 0;
 
 /* Variables End */
 

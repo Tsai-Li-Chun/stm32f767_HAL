@@ -28,6 +28,7 @@ extern "C" {
 #define Number_of_LDxxxEM22 6
 #define command_length 8
 #define response_max_length 100
+#define maca_all_rx_flag (uint8_t)0x3F
 
 /* define Delta LD-xxxE-M22 communication parameter */
 #define __Model__ LD_100E_M22
@@ -145,7 +146,8 @@ extern "C" {
 /* Extern Variables Begin */
 
 /* all MACA 6 legs information obtained flag */
-extern uint8_t maca_all_rx_flag;
+extern uint8_t maca_rx_flag;
+extern uint8_t debug_flag;
 
 /* Extern Variables End */
 

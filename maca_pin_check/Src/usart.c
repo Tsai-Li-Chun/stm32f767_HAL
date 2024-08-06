@@ -22,6 +22,7 @@
 
 /* USER CODE BEGIN 0 */
 #include "gpio.h"
+#include "tim.h"
 #include "usbd_cdc_if.h"
 #include "delta_LD_xxxE_M22.h"
 
@@ -42,6 +43,7 @@ UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 UART_HandleTypeDef huart6;
 UART_HandleTypeDef* huartX[Number_of_LDxxxEM22]={&huart1, &huart2, &huart3, &huart4, &huart5, &huart6};
+
 /* UART4 init function */
 void MX_UART4_Init(void)
 {
@@ -288,7 +290,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
 		HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
 		/* UART4 interrupt Init */
-		HAL_NVIC_SetPriority(UART4_IRQn, 8, 0);
+		HAL_NVIC_SetPriority(UART4_IRQn, 4, 0);
 		HAL_NVIC_EnableIRQ(UART4_IRQn);
 	/* USER CODE BEGIN UART4_MspInit 1 */
 
@@ -323,7 +325,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
 		HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
 		/* UART5 interrupt Init */
-		HAL_NVIC_SetPriority(UART5_IRQn, 9, 0);
+		HAL_NVIC_SetPriority(UART5_IRQn, 4, 0);
 		HAL_NVIC_EnableIRQ(UART5_IRQn);
 	/* USER CODE BEGIN UART5_MspInit 1 */
 
@@ -377,7 +379,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
 		HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 		/* USART2 interrupt Init */
-		HAL_NVIC_SetPriority(USART2_IRQn, 5, 0);
+		HAL_NVIC_SetPriority(USART2_IRQn, 4, 0);
 		HAL_NVIC_EnableIRQ(USART2_IRQn);
 	/* USER CODE BEGIN USART2_MspInit 1 */
 
@@ -404,7 +406,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
 		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 		/* USART3 interrupt Init */
-		HAL_NVIC_SetPriority(USART3_IRQn, 6, 0);
+		HAL_NVIC_SetPriority(USART3_IRQn, 4, 0);
 		HAL_NVIC_EnableIRQ(USART3_IRQn);
 	/* USER CODE BEGIN USART3_MspInit 1 */
 
@@ -431,7 +433,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
 		HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
 		/* USART6 interrupt Init */
-		HAL_NVIC_SetPriority(USART6_IRQn, 7, 0);
+		HAL_NVIC_SetPriority(USART6_IRQn, 4, 0);
 		HAL_NVIC_EnableIRQ(USART6_IRQn);
 	/* USER CODE BEGIN USART6_MspInit 1 */
 
@@ -588,6 +590,11 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 			HAL_UARTEx_ReceiveToIdle_IT(huart, uart_rx_buff+(for_tx*response_max_length), response_max_length);
 			HAL_GPIO_WritePin(tx_gpio_debug_port[for_tx], tx_gpio_debug_pin[for_tx], GPIO_PIN_RESET);
 			/* break for loop */
+			if(for_tx == (Number_of_LDxxxEM22-1))
+			{
+				HAL_TIM_Base_Start_IT(&htim4);
+				debug_flag = 1;
+			}
 			for_tx = response_max_length;
 		}
 	}
@@ -617,6 +624,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 	UNUSED(Size);
 
 	/* poll to check which of UART1-6 has completed RxIDLE */
+	// HAL_GPIO_TogglePin(GPIOD, led_orange_Pin);
 	for(for_rx=0; for_rx<Number_of_LDxxxEM22; for_rx++)
 	{
 		if(huart->Instance == huartX[for_rx]->Instance)
@@ -625,9 +633,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 			/* check if the data length is correct (noise prevention) */
 			if( (Size>=(command_length-2)) )
 			{	/* data length correct, set the corresponding flag for UARTx */
-				maca_all_rx_flag |= 0x1<<for_rx;
-				if(maca_all_rx_flag == 0x3F)
-					HAL_GPIO_WritePin(GPIOD, led_red_Pin, GPIO_PIN_SET);
+				maca_rx_flag |= 0x1<<for_rx;
 			}
 			else	/* data length is incorrect, ignore the data and restart the RxIDLE interrupt */
 				HAL_UARTEx_ReceiveToIdle_IT(huart, uart_rx_buff+(for_rx*response_max_length), response_max_length);

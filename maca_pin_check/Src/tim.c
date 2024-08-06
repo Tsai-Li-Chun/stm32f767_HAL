@@ -29,6 +29,7 @@ uint8_t for_tim3 = 0;
 /* USER CODE END 0 */
 
 TIM_HandleTypeDef htim3;
+TIM_HandleTypeDef htim4;
 
 /* TIM3 init function */
 void MX_TIM3_Init(void)
@@ -70,6 +71,46 @@ void MX_TIM3_Init(void)
 	/* USER CODE END TIM3_Init 2 */
 
 }
+/* TIM4 init function */
+void MX_TIM4_Init(void)
+{
+
+	/* USER CODE BEGIN TIM4_Init 0 */
+
+	/* USER CODE END TIM4_Init 0 */
+
+	TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+	TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+	/* USER CODE BEGIN TIM4_Init 1 */
+
+	/* USER CODE END TIM4_Init 1 */
+	htim4.Instance = TIM4;
+	htim4.Init.Prescaler = 83;
+	htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
+	htim4.Init.Period = 99;
+	htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+	htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+	if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+	if (HAL_TIM_ConfigClockSource(&htim4, &sClockSourceConfig) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+	sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+	if (HAL_TIMEx_MasterConfigSynchronization(&htim4, &sMasterConfig) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	/* USER CODE BEGIN TIM4_Init 2 */
+
+	/* USER CODE END TIM4_Init 2 */
+
+}
 
 void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
 {
@@ -83,11 +124,26 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
 		__HAL_RCC_TIM3_CLK_ENABLE();
 
 		/* TIM3 interrupt Init */
-		HAL_NVIC_SetPriority(TIM3_IRQn, 10, 0);
+		HAL_NVIC_SetPriority(TIM3_IRQn, 14, 0);
 		HAL_NVIC_EnableIRQ(TIM3_IRQn);
 	/* USER CODE BEGIN TIM3_MspInit 1 */
 
 	/* USER CODE END TIM3_MspInit 1 */
+	}
+	else if(tim_baseHandle->Instance==TIM4)
+	{
+	/* USER CODE BEGIN TIM4_MspInit 0 */
+
+	/* USER CODE END TIM4_MspInit 0 */
+		/* TIM4 clock enable */
+		__HAL_RCC_TIM4_CLK_ENABLE();
+
+		/* TIM4 interrupt Init */
+		HAL_NVIC_SetPriority(TIM4_IRQn, 13, 0);
+		HAL_NVIC_EnableIRQ(TIM4_IRQn);
+	/* USER CODE BEGIN TIM4_MspInit 1 */
+
+	/* USER CODE END TIM4_MspInit 1 */
 	}
 }
 
@@ -108,6 +164,20 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 
 	/* USER CODE END TIM3_MspDeInit 1 */
 	}
+	else if(tim_baseHandle->Instance==TIM4)
+	{
+	/* USER CODE BEGIN TIM4_MspDeInit 0 */
+
+	/* USER CODE END TIM4_MspDeInit 0 */
+		/* Peripheral clock disable */
+		__HAL_RCC_TIM4_CLK_DISABLE();
+
+		/* TIM4 interrupt Deinit */
+		HAL_NVIC_DisableIRQ(TIM4_IRQn);
+	/* USER CODE BEGIN TIM4_MspDeInit 1 */
+
+	/* USER CODE END TIM4_MspDeInit 1 */
+	}
 }
 
 /* USER CODE BEGIN 1 */
@@ -123,10 +193,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	/* Prevent unused argument(s) compilation warning */
 	UNUSED(htim);
 
-	/* If an interrupt occurs in TIM3 */
+	/* if an interrupt occurs in TIM3 */
 	if( htim->Instance == TIM3 )
 	{
-		maca_all_rx_flag = 0;
+		if( (debug_flag) && (maca_rx_flag!=0x3F) )
+			HAL_GPIO_WritePin(GPIOD, led_green_Pin, GPIO_PIN_SET);
+		maca_rx_flag = 0;
 		if(delay_time_1ms>0) delay_time_1ms--;
 		HAL_GPIO_TogglePin(GPIOD, led_blue_Pin);
 		HAL_GPIO_WritePin(GPIOD, led_red_Pin, GPIO_PIN_RESET);
@@ -139,11 +211,24 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			{
 				HAL_UART_Transmit_IT(huartX[for_tim3], uart_tx_buff+tx_buff_size, command_length);
 				HAL_GPIO_WritePin(tx_gpio_debug_port[for_tim3], tx_gpio_debug_pin[for_tim3], GPIO_PIN_SET);
+				// HAL_GPIO_WritePin(rx_gpio_debug_port[for_tim3], rx_gpio_debug_pin[for_tim3], GPIO_PIN_RESET);
 			}
 			else
 			{
 				/* To be added */
 			}
+		}
+	}
+
+	/* if an interrupt occurs in TIM4 */
+	if( htim->Instance == TIM4 )
+	{
+		HAL_GPIO_TogglePin(GPIOD, led_orange_Pin);
+		if( maca_rx_flag == maca_all_rx_flag )
+		{
+			HAL_TIM_Base_Stop_IT(htim);
+			HAL_GPIO_WritePin(GPIOD, led_red_Pin, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOD, led_orange_Pin, GPIO_PIN_RESET);
 		}
 	}
 }
