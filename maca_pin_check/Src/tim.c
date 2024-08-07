@@ -23,9 +23,11 @@
 /* USER CODE BEGIN 0 */
 #include "usart.h"
 #include "gpio.h"
+#include "usbd_cdc_if.h"
 #include "delta_LD_xxxE_M22.h"
 
 uint8_t for_tim3 = 0;
+uint8_t for_tim4 = 0;
 /* USER CODE END 0 */
 
 TIM_HandleTypeDef htim3;
@@ -229,6 +231,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			HAL_TIM_Base_Stop_IT(htim);
 			HAL_GPIO_WritePin(GPIOD, led_red_Pin, GPIO_PIN_SET);
 			HAL_GPIO_WritePin(GPIOD, led_orange_Pin, GPIO_PIN_RESET);
+			decode_protocol();
+			CDC_Transmit_FS(usb_tx_buff,27);
+			// for(for_tim4=0; for_tim4<Number_of_LDxxxEM22; for_tim4++)
+			// 	CDC_Transmit_FS(&for_tim4,1);
 		}
 	}
 }

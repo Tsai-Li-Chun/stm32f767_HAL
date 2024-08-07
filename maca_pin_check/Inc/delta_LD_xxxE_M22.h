@@ -203,7 +203,7 @@ void set_DetectionOut(void);
 void set_RestoreFactory(void);
 
 uint16_t populate_protocol(uint8_t id, uint8_t fc, uint32_t adr, uint16_t len_or_data);
-uint16_t decode_protocol(uint8_t id);
+uint16_t decode_protocol(void);
 uint16_t calculate_CRC(uint8_t* data, uint16_t size);
 void verify_CRC(void);
 

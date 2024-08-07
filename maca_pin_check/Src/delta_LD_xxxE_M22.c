@@ -32,6 +32,7 @@
 /* all MACA 6 legs information obtained flag */
 uint8_t maca_rx_flag;
 uint8_t debug_flag = 0;
+uint8_t for_i,for_j;
 
 /* Variables End */
 
@@ -282,11 +283,18 @@ uint16_t populate_protocol(uint8_t id, uint8_t fc, uint32_t adr, uint16_t len_or
  	* @param leg_id(uint8_t) LD_xxxE_M22 id, byte1
  	* @return execution result code
 **/
-uint16_t decode_protocol(uint8_t id)
+uint16_t decode_protocol(void)
 {
-	// uint8_t index = id*response_max_length;
-	// uint8_t leg_id = uart_rx_buff[index];
-	// if( (id+1) != leg_id )	return 1;
+	usb_tx_buff[0] = 'C';
+	for( for_i=0; for_i<Number_of_LDxxxEM22; for_i++ )
+	{
+		usb_tx_buff[for_i*4+1] = uart_rx_buff[for_i*response_max_length+3];
+		usb_tx_buff[for_i*4+2] = uart_rx_buff[for_i*response_max_length+4];
+		usb_tx_buff[for_i*4+3] = uart_rx_buff[for_i*response_max_length+5];
+		usb_tx_buff[for_i*4+4] = uart_rx_buff[for_i*response_max_length+6];
+	}
+	usb_tx_buff[25] = 'A';
+	usb_tx_buff[26] = 'S';
 
 	return 0;
 }

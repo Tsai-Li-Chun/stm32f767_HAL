@@ -94,7 +94,7 @@ uint8_t UserRxBufferFS[APP_RX_DATA_SIZE];
 uint8_t UserTxBufferFS[APP_TX_DATA_SIZE];
 
 /* USER CODE BEGIN PRIVATE_VARIABLES */
-
+uint8_t usb_tx_buff[usb_buff_max_size];
 /* USER CODE END PRIVATE_VARIABLES */
 
 /**

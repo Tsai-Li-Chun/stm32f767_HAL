@@ -115,17 +115,11 @@ int main(void)
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		// if( HAL_GPIO_ReadPin(user_GPIO_Port,user_Pin) )
-		// {	
-		// 	// calculate_CRC(read_absolute_position, 6);
-		// 	// CDC_Transmit_FS(read_absolute_position, 6);
-		// 	// CDC_Receive_FS(read_absolute_position, 6);
-		// 	// HAL_GPIO_WritePin(GPIOD, led_red_Pin, GPIO_PIN_SET);
-		// 	// HAL_UART_Transmit(&huart4, usb_tx_buff, usb_tx_buff_size, 100);
-		// 	HAL_UART_Transmit_IT(&huart4, read_absolute_position, 8);
+		// for(int for_tim4=0; for_tim4<Number_of_LDxxxEM22; for_tim4++)
+		// {
+		// 	CDC_Transmit_FS(&for_tim4,1);
+		// 	delay_1ms(1);
 		// }
-
-		// delay_1ms(1000);
 	}
 	/* USER CODE END 3 */
 }

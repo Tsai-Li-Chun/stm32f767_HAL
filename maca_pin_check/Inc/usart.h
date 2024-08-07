@@ -59,7 +59,6 @@ void MX_USART6_UART_Init(void);
 /* USER CODE BEGIN Prototypes */
 extern uint16_t tx_buff_size;
 extern uint16_t rx_buff_size;
-extern uint8_t usb_tx_buff[tx_buff_max_size];
 extern uint8_t uart_tx_buff[tx_buff_max_size];
 extern uint8_t uart_rx_buff[rx_buff_max_size];
 extern uint8_t read_absolute_position[8];
