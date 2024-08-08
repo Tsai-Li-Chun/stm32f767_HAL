@@ -24,11 +24,11 @@
 /* USER CODE BEGIN 0 */
 #include "main.h"
 
-GPIO_TypeDef* tx_gpio_debug_port[Number_of_LDxxxEM22] = {
+GPIO_TypeDef* tx_gpio_debug_port[number_of_legs] = {
 	u1_tx_GPIO_Port, u2_tx_GPIO_Port, u3_tx_GPIO_Port, u4_tx_GPIO_Port, u5_tx_GPIO_Port, u6_tx_GPIO_Port	};
-GPIO_TypeDef* rx_gpio_debug_port[Number_of_LDxxxEM22] = {
+GPIO_TypeDef* rx_gpio_debug_port[number_of_legs] = {
 	u1_rx_GPIO_Port, u2_rx_GPIO_Port, u3_rx_GPIO_Port, u4_rx_GPIO_Port, u5_rx_GPIO_Port, u6_rx_GPIO_Port	};
-uint16_t      tx_gpio_debug_pin[Number_of_LDxxxEM22] = {
+uint16_t      tx_gpio_debug_pin[number_of_legs] = {
 	u1_tx_Pin,	/* leg1 -> usart1, B0 B1 */
 	u2_tx_Pin,	/* leg2 -> usart2, B2 E7 */
 	u3_tx_Pin,	/* leg3 -> usart3, E8 E9 */
@@ -36,7 +36,7 @@ uint16_t      tx_gpio_debug_pin[Number_of_LDxxxEM22] = {
 	u5_tx_Pin,	/* leg5 -> uart5, E12 E13 */
 	u6_tx_Pin,	/* leg6 -> usart6,E14 E15 */
 };
-uint16_t      rx_gpio_debug_pin[Number_of_LDxxxEM22] = {
+uint16_t      rx_gpio_debug_pin[number_of_legs] = {
 	u1_rx_Pin,	/* leg1 -> usart1, B0 B1 */
 	u2_rx_Pin,	/* leg2 -> usart2, B2 E7 */
 	u3_rx_Pin,	/* leg3 -> usart3, E8 E9 */

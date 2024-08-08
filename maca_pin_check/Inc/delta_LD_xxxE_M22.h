@@ -25,10 +25,8 @@ extern "C" {
 /* Define ---------------------------------------------------*/
 /* Define Begin */
 
-#define Number_of_LDxxxEM22 6
 #define command_length 8
 #define response_max_length 100
-#define maca_all_rx_flag (uint8_t)0x3F
 
 /* define Delta LD-xxxE-M22 communication parameter */
 #define __Model__ LD_100E_M22
@@ -133,11 +131,15 @@ extern "C" {
 /* Extern Typedef -------------------------------------------*/
 /* Extern Typedef Begin */
 
-// /* declare the 6 legs as enum constants. */
-// typedef enum LEG
-// {
-//     leg1=0, leg2, leg3, leg4, leg5, leg6
-// } leg_id;
+typedef struct
+{
+	uint8_t  id;
+	uint8_t  fc;
+	uint16_t length;
+	uint16_t start_adr;
+	uint16_t* data;
+	uint16_t crc;
+}LDxxxEM22_protocol_structTYPE;
 
 /* Extern Typedef End */
 
@@ -147,7 +149,6 @@ extern "C" {
 
 /* all MACA 6 legs information obtained flag */
 extern uint8_t maca_rx_flag;
-extern uint8_t debug_flag;
 
 /* Extern Variables End */
 

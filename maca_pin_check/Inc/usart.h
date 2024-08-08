@@ -29,7 +29,7 @@ extern "C" {
 #include "main.h"
 
 /* USER CODE BEGIN Includes */
-#include "delta_LD_xxxE_M22.h"
+#include "cas_macaps15.h"
 /* USER CODE END Includes */
 
 extern UART_HandleTypeDef huart4;
@@ -62,7 +62,7 @@ extern uint16_t rx_buff_size;
 extern uint8_t uart_tx_buff[tx_buff_max_size];
 extern uint8_t uart_rx_buff[rx_buff_max_size];
 extern uint8_t read_absolute_position[8];
-extern UART_HandleTypeDef* huartX[Number_of_LDxxxEM22];
+extern UART_HandleTypeDef* huartX[number_of_legs];
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

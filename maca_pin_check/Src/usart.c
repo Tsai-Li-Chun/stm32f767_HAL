@@ -24,7 +24,7 @@
 #include "gpio.h"
 #include "tim.h"
 #include "usbd_cdc_if.h"
-#include "delta_LD_xxxE_M22.h"
+#include "cas_macaps15.h"
 
 uint8_t for_tx,for_rx;
 uint16_t tx_buff_size = 0;
@@ -41,7 +41,7 @@ UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 UART_HandleTypeDef huart6;
-UART_HandleTypeDef* huartX[Number_of_LDxxxEM22]={&huart1, &huart2, &huart3, &huart4, &huart5, &huart6};
+UART_HandleTypeDef* huartX[number_of_legs]={&huart1, &huart2, &huart3, &huart4, &huart5, &huart6};
 
 /* UART4 init function */
 void MX_UART4_Init(void)
@@ -581,7 +581,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 	UNUSED(huart);
 
 	/* poll to check which of UART1-6 has completed Tx */
-	for(for_tx=0; for_tx<Number_of_LDxxxEM22; for_tx++)
+	for(for_tx=0; for_tx<number_of_legs; for_tx++)
 	{
 		if(huart->Instance == huartX[for_tx]->Instance)
 		{
@@ -589,10 +589,10 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 			HAL_UARTEx_ReceiveToIdle_IT(huart, uart_rx_buff+(for_tx*response_max_length), response_max_length);
 			HAL_GPIO_WritePin(tx_gpio_debug_port[for_tx], tx_gpio_debug_pin[for_tx], GPIO_PIN_RESET);
 			/* break for loop */
-			if(for_tx == (Number_of_LDxxxEM22-1))
+			if(for_tx == (number_of_legs-1))
 			{
 				HAL_TIM_Base_Start_IT(&htim4);
-				debug_flag = 1;
+				error_flag = 1;
 			}
 			for_tx = response_max_length;
 		}
@@ -624,7 +624,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 
 	/* poll to check which of UART1-6 has completed RxIDLE */
 	// HAL_GPIO_TogglePin(GPIOD, led_orange_Pin);
-	for(for_rx=0; for_rx<Number_of_LDxxxEM22; for_rx++)
+	for(for_rx=0; for_rx<number_of_legs; for_rx++)
 	{
 		if(huart->Instance == huartX[for_rx]->Instance)
 		{

@@ -27,7 +27,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
-#include "delta_LD_xxxE_M22.h"
+#include "cas_macaps15.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -115,7 +115,7 @@ int main(void)
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		// for(int for_tim4=0; for_tim4<Number_of_LDxxxEM22; for_tim4++)
+		// for(int for_tim4=0; for_tim4<number_of_legs; for_tim4++)
 		// {
 		// 	CDC_Transmit_FS(&for_tim4,1);
 		// 	delay_1ms(1);

@@ -12,7 +12,7 @@
 /* User Includes Begin */
 #include "usart.h"
 #include "usbd_cdc_if.h"
-#include "delta_LD_xxxE_M22.h"
+#include "cas_macaps15.h"
 /* User Includes End */
 
 
@@ -31,7 +31,7 @@
 
 /* all MACA 6 legs information obtained flag */
 uint8_t maca_rx_flag;
-uint8_t debug_flag = 0;
+
 uint8_t for_i,for_j;
 
 /* Variables End */
@@ -260,7 +260,7 @@ uint16_t populate_protocol(uint8_t id, uint8_t fc, uint32_t adr, uint16_t len_or
 	uint16_t len_tmp =(uint16_t)((adr&0x0000FF00)>>8);
 
 	/* check if the specified legs id meets the requirements */
-	if( id>Number_of_LDxxxEM22 ) return 0;
+	if( id>number_of_legs ) return 0;
 	/* check if fc meets the requirements */
 	if( fc_tmp == 0 ) return 1;
 	if( (fc_tmp&fc) == 0 ) return 1;
@@ -286,7 +286,7 @@ uint16_t populate_protocol(uint8_t id, uint8_t fc, uint32_t adr, uint16_t len_or
 uint16_t decode_protocol(void)
 {
 	usb_tx_buff[0] = 'C';
-	for( for_i=0; for_i<Number_of_LDxxxEM22; for_i++ )
+	for( for_i=0; for_i<number_of_legs; for_i++ )
 	{
 		usb_tx_buff[for_i*4+1] = uart_rx_buff[for_i*response_max_length+3];
 		usb_tx_buff[for_i*4+2] = uart_rx_buff[for_i*response_max_length+4];

@@ -24,7 +24,7 @@
 #include "usart.h"
 #include "gpio.h"
 #include "usbd_cdc_if.h"
-#include "delta_LD_xxxE_M22.h"
+#include "cas_macaps15.h"
 
 uint8_t for_tim3 = 0;
 uint8_t for_tim4 = 0;
@@ -198,7 +198,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	/* if an interrupt occurs in TIM3 */
 	if( htim->Instance == TIM3 )
 	{
-		if( (debug_flag) && (maca_rx_flag!=0x3F) )
+		if( (error_flag) && (maca_rx_flag!=0x3F) )
 			HAL_GPIO_WritePin(GPIOD, led_green_Pin, GPIO_PIN_SET);
 		maca_rx_flag = 0;
 		if(delay_time_1ms>0) delay_time_1ms--;
@@ -206,7 +206,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		HAL_GPIO_WritePin(GPIOD, led_red_Pin, GPIO_PIN_RESET);
 		/* send command to read absolute position of six legs */
 		// HAL_UART_Transmit_IT(&huart1, read_absolute_position, 8);
-		for(for_tim3=0; for_tim3<Number_of_LDxxxEM22; for_tim3++)
+		for(for_tim3=0; for_tim3<number_of_legs; for_tim3++)
 		{
 			tx_buff_size = read_AbsolutePosition(for_tim3);
 			if((tx_buff_size%command_length)==0)
@@ -233,7 +233,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			HAL_GPIO_WritePin(GPIOD, led_orange_Pin, GPIO_PIN_RESET);
 			decode_protocol();
 			CDC_Transmit_FS(usb_tx_buff,27);
-			// for(for_tim4=0; for_tim4<Number_of_LDxxxEM22; for_tim4++)
+			// for(for_tim4=0; for_tim4<number_of_legs; for_tim4++)
 			// 	CDC_Transmit_FS(&for_tim4,1);
 		}
 	}
