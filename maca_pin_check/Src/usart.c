@@ -27,11 +27,11 @@
 #include "cas_macaps15.h"
 
 uint8_t for_tx,for_rx;
-uint16_t tx_buff_size = 0;
 uint16_t rx_buff_size = 0;
 uint8_t uart_tx_buff[tx_buff_max_size];
 uint8_t uart_rx_buff[rx_buff_max_size];
 uint8_t read_absolute_position[8] = {0x01, 0x03, 0x10, 0x04, 0x00, 0x02, 0x81, 0x0A};
+uint8_t *uart_tx_buff_index;
 // uint8_t read_absolute_position[8] = {0x01, 0x06, 0x10, 0x00, 0x00, 0x01, 0x1D, 0x0A};
 /* USER CODE END 0 */
 
@@ -588,12 +588,9 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 			/* enable corresponding UARTx RxIDLE interrupt */
 			HAL_UARTEx_ReceiveToIdle_IT(huart, uart_rx_buff+(for_tx*response_max_length), response_max_length);
 			HAL_GPIO_WritePin(tx_gpio_debug_port[for_tx], tx_gpio_debug_pin[for_tx], GPIO_PIN_RESET);
+			/* all 6 UART finished transmitting, enable TIM4 */
+			if(for_tx == (number_of_legs-1)) HAL_TIM_Base_Start_IT(&htim4);
 			/* break for loop */
-			if(for_tx == (number_of_legs-1))
-			{
-				HAL_TIM_Base_Start_IT(&htim4);
-				error_flag = 1;
-			}
 			for_tx = response_max_length;
 		}
 	}

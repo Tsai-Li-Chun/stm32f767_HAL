@@ -131,13 +131,20 @@ extern "C" {
 /* Extern Typedef -------------------------------------------*/
 /* Extern Typedef Begin */
 
+/* declare the 6 legs as enum constants. */
+typedef enum LEG
+{
+    leg_id1=0, leg_id2, leg_id3, leg_id4, leg_id5, leg_id6
+} leg_id;
+
+/* structure for the LDxxxEM22 communication protocol */
 typedef struct
 {
 	uint8_t  id;
 	uint8_t  fc;
 	uint16_t length;
 	uint16_t start_adr;
-	uint16_t* data;
+	uint16_t data;
 	uint16_t crc;
 }LDxxxEM22_protocol_structTYPE;
 
@@ -149,6 +156,10 @@ typedef struct
 
 /* all MACA 6 legs information obtained flag */
 extern uint8_t maca_rx_flag;
+/* structure for the LDxxxEM22 Tx communication protocol */
+extern LDxxxEM22_protocol_structTYPE LDxxxE_protocol_struct_tx;
+/* structure for the LDxxxEM22 Rx communication protocol */
+extern LDxxxEM22_protocol_structTYPE LDxxxE_protocol_struct_rx;
 
 /* Extern Variables End */
 
@@ -161,7 +172,7 @@ void delta_LD_xxxE_M22_uart_setup(UART_HandleTypeDef *huart);
 void read_DeviceID(void);
 void read_BaudRate(void);
 void read_Format(void);
-uint16_t  read_AbsolutePosition(uint8_t id);
+uint16_t  read_AbsolutePosition(uint8_t id, LDxxxEM22_protocol_structTYPE* xxxE, uint8_t* buff);
 void read_RelativePosition(void);
 void read_SetZeroSW(void);
 void read_SetZeroPos(void);
@@ -203,9 +214,14 @@ void set_ExposureHierarchy(void);
 void set_DetectionOut(void);
 void set_RestoreFactory(void);
 
-uint16_t populate_protocol(uint8_t id, uint8_t fc, uint32_t adr, uint16_t len_or_data);
+uint8_t populate_LDxxxE_struct(uint8_t id,
+							   uint8_t fc,
+							   uint32_t adr,
+							   uint16_t data,
+							   LDxxxEM22_protocol_structTYPE* xxxE);
+uint16_t populate_protocol(LDxxxEM22_protocol_structTYPE* xxxE, uint8_t* buff);
 uint16_t decode_protocol(void);
-uint16_t calculate_CRC(uint8_t* data, uint16_t size);
+uint16_t calculate_CRC(uint8_t* buff);
 void verify_CRC(void);
 
 /* Function End */

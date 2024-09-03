@@ -33,7 +33,30 @@
 			"cstdint": "c",
 			"tim.h": "c",
 			"stm32f4xx_hal_cortex.h": "c",
-			"stm32f4xx.h": "c"
+			"stm32f4xx.h": "c",
+			"locale": "c",
+			"xlocale": "c",
+			"xlocmes": "c",
+			"xlocmon": "c",
+			"xlocnum": "c",
+			"xloctime": "c",
+			"text_encoding": "c",
+			"array": "c",
+			"deque": "c",
+			"format": "c",
+			"initializer_list": "c",
+			"list": "c",
+			"queue": "c",
+			"random": "c",
+			"ranges": "c",
+			"span": "c",
+			"utility": "c",
+			"vector": "c",
+			"xhash": "c",
+			"xstring": "c",
+			"xutility": "c",
+			"string_view": "c",
+			"stm32f4xx_hal_gpio.h": "c"
 		}
 		
 	}

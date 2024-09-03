@@ -39,10 +39,6 @@ extern "C" {
 
 /* Extern Variables -----------------------------------------*/
 /* Extern Variables Begin */
-
-/* if any of six legs of the maca receive an error flag */
-extern uint8_t error_flag;
-
 /* Extern Variables End */
 
 

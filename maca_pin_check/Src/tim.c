@@ -198,26 +198,27 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	/* if an interrupt occurs in TIM3 */
 	if( htim->Instance == TIM3 )
 	{
-		if( (error_flag) && (maca_rx_flag!=0x3F) )
-			HAL_GPIO_WritePin(GPIOD, led_green_Pin, GPIO_PIN_SET);
+		if( maca_rx_flag!=0x3F )
+			HAL_GPIO_WritePin(debug_lack_GPIO_Port, debug_lack_Pin, GPIO_PIN_SET);
 		maca_rx_flag = 0;
 		if(delay_time_1ms>0) delay_time_1ms--;
-		HAL_GPIO_TogglePin(GPIOD, led_blue_Pin);
-		HAL_GPIO_WritePin(GPIOD, led_red_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_TogglePin(debug_tim3_GPIO_Port, debug_tim3_Pin);
+		HAL_GPIO_WritePin(debug_allOK_GPIO_Port, debug_allOK_Pin, GPIO_PIN_RESET);
 		/* send command to read absolute position of six legs */
 		// HAL_UART_Transmit_IT(&huart1, read_absolute_position, 8);
 		for(for_tim3=0; for_tim3<number_of_legs; for_tim3++)
 		{
-			tx_buff_size = read_AbsolutePosition(for_tim3);
-			if((tx_buff_size%command_length)==0)
+			uart_tx_buff_index = uart_tx_buff+(for_tim3*command_length);
+			if(read_AbsolutePosition(for_tim3, &LDxxxE_protocol_struct_tx, uart_tx_buff_index)==0)
 			{
-				HAL_UART_Transmit_IT(huartX[for_tim3], uart_tx_buff+tx_buff_size, command_length);
+				HAL_UART_Transmit_IT(huartX[for_tim3], uart_tx_buff_index, command_length);
 				HAL_GPIO_WritePin(tx_gpio_debug_port[for_tim3], tx_gpio_debug_pin[for_tim3], GPIO_PIN_SET);
 				// HAL_GPIO_WritePin(rx_gpio_debug_port[for_tim3], rx_gpio_debug_pin[for_tim3], GPIO_PIN_RESET);
 			}
 			else
 			{
 				/* To be added */
+				// HAL_GPIO_WritePin(debug_lack_GPIO_Port, debug_lack_Pin, GPIO_PIN_SET);
 			}
 		}
 	}
@@ -225,12 +226,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	/* if an interrupt occurs in TIM4 */
 	if( htim->Instance == TIM4 )
 	{
-		HAL_GPIO_TogglePin(GPIOD, led_orange_Pin);
+		HAL_GPIO_TogglePin(debug_tim4_GPIO_Port, debug_tim4_Pin);
 		if( maca_rx_flag == maca_all_rx_flag )
 		{
 			HAL_TIM_Base_Stop_IT(htim);
-			HAL_GPIO_WritePin(GPIOD, led_red_Pin, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(GPIOD, led_orange_Pin, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(debug_allOK_GPIO_Port, debug_allOK_Pin, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(debug_tim4_GPIO_Port, debug_tim4_Pin, GPIO_PIN_RESET);
 			decode_protocol();
 			CDC_Transmit_FS(usb_tx_buff,27);
 			// for(for_tim4=0; for_tim4<number_of_legs; for_tim4++)

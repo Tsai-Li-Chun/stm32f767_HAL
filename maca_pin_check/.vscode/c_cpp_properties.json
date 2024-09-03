@@ -12,7 +12,7 @@
                 "${workspaceFolder}/Inc"
             ],
             "defines": [
-                "STM32F407xx"
+                "STM32F405xx"
             ],
             "compilerPath": "C:/Program Files/mingw64/bin/gcc.exe",
             "cStandard": "c17",

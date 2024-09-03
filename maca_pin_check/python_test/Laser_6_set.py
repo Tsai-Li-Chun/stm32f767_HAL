@@ -39,7 +39,7 @@ class ProgressBarApp:
 			self.dis_label[i].grid(column=2, row=i)
 		
 		# create serial connection
-		self.serial_port = serial.Serial('COM7', 9600, timeout=1)
+		self.serial_port = serial.Serial('COM9', 9600, timeout=1)
 		if self.serial_port.isOpen():
 			self.serial_port.flushInput()  # Flush input buffer
 			self.serial_port.flushOutput()  # Flush output buffer

@@ -26,9 +26,6 @@
 
 /* Variables ------------------------------------------------*/
 /* Variables Begin */
-
-uint8_t error_flag = 0;
-
 /* Variables End */
 
 
