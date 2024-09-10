@@ -1,0 +1,24 @@
+{
+    // 使用 IntelliSense 以得知可用的屬性。
+    // 暫留以檢視現有屬性的描述。
+    // 如需詳細資訊，請瀏覽: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Cortex Debug",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/build/maca_pin_check.elf",
+            "request": "launch",
+            "interface": "swd",
+            "type": "cortex-debug",
+            "runToEntryPoint": "main",
+            "servertype": "openocd",
+            "device": "STM32F407VG",
+            "svdFile": "${workspaceRoot}/STM32F407.svd",
+            "configFiles": [
+                "C:/Program Files/STMicroelectronics/openocd-v0.12.0-i686-w64-mingw32/share/openocd/scripts/interface/stlink-v2.cfg",
+                "C:/Program Files/STMicroelectronics/openocd-v0.12.0-i686-w64-mingw32/share/openocd/scripts/target/stm32f4x.cfg"
+            ]
+        }
+    ]
+}

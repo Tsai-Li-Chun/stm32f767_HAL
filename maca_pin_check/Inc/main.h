@@ -101,8 +101,8 @@ void delay_1ms(int);
 #define LD100E_ID2_in_GPIO_Port GPIOB
 #define LD100E_ID3_in_Pin GPIO_PIN_4
 #define LD100E_ID3_in_GPIO_Port GPIOB
-#define LD100E_ID2_inB5_Pin GPIO_PIN_5
-#define LD100E_ID2_inB5_GPIO_Port GPIOB
+#define LD100E_ID4_in_Pin GPIO_PIN_5
+#define LD100E_ID4_in_GPIO_Port GPIOB
 #define LD100E_ID5_in_Pin GPIO_PIN_8
 #define LD100E_ID5_in_GPIO_Port GPIOB
 #define LD100E_ID6_in_Pin GPIO_PIN_9
