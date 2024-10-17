@@ -57,7 +57,8 @@
 			"xutility": "c",
 			"string_view": "c",
 			"stm32f4xx_hal_gpio.h": "c",
-			"main.h": "c"
+			"main.h": "c",
+			"dma.h": "c"
 		},
 		"cortex-debug.variableUseNaturalFormat": false
 		

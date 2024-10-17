@@ -34,11 +34,26 @@ extern "C" {
 
 /* Extern Typedef -------------------------------------------*/
 /* Extern Typedef Begin */
+
+/* declare the 6 legs as enum constants. */
+typedef enum LEG
+{
+    leg_id1=0, leg_id2, leg_id3, leg_id4, leg_id5, leg_id6
+} leg_id;
+
 /* Extern Typedef End */
 
 
 /* Extern Variables -----------------------------------------*/
 /* Extern Variables Begin */
+
+/* all MACA 6 legs information obtained flag */
+extern uint8_t maca_rx_flag;
+/* structure for the LDxxxEM22 Tx communication protocol */
+extern LDxxxEM22_protocol_structTYPE LDxxxE_protocol_struct_tx;
+/* structure for the LDxxxEM22 Rx communication protocol */
+extern LDxxxEM22_protocol_structTYPE LDxxxE_protocol_struct_rx[number_of_legs];
+
 /* Extern Variables End */
 
 

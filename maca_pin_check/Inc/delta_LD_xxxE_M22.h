@@ -131,11 +131,13 @@ extern "C" {
 /* Extern Typedef -------------------------------------------*/
 /* Extern Typedef Begin */
 
-/* declare the 6 legs as enum constants. */
-typedef enum LEG
+typedef enum 
 {
-    leg_id1=0, leg_id2, leg_id3, leg_id4, leg_id5, leg_id6
-} leg_id;
+  LDxxxE_OK		= 0x00U,
+  LDxxxE_Err_id		= 0x01U,
+  LDxxxE_Err_fc    	= 0x02U,
+  LDxxxE_Err_crc	= 0x05U
+} Delta_LDxxxE_ErrorDef;
 
 /* structure for the LDxxxEM22 communication protocol */
 typedef struct
@@ -144,7 +146,7 @@ typedef struct
 	uint8_t  fc;
 	uint16_t length;
 	uint16_t start_adr;
-	uint16_t data;
+	uint8_t data[4];
 	uint16_t crc;
 }LDxxxEM22_protocol_structTYPE;
 
@@ -153,14 +155,6 @@ typedef struct
 
 /* Extern Variables -----------------------------------------*/
 /* Extern Variables Begin */
-
-/* all MACA 6 legs information obtained flag */
-extern uint8_t maca_rx_flag;
-/* structure for the LDxxxEM22 Tx communication protocol */
-extern LDxxxEM22_protocol_structTYPE LDxxxE_protocol_struct_tx;
-/* structure for the LDxxxEM22 Rx communication protocol */
-extern LDxxxEM22_protocol_structTYPE LDxxxE_protocol_struct_rx;
-
 /* Extern Variables End */
 
 
@@ -220,9 +214,8 @@ uint8_t populate_LDxxxE_struct(uint8_t id,
 							   uint16_t data,
 							   LDxxxEM22_protocol_structTYPE* xxxE);
 uint16_t populate_protocol(LDxxxEM22_protocol_structTYPE* xxxE, uint8_t* buff);
-uint16_t decode_protocol(void);
+uint16_t decode_protocol(uint8_t* buff, LDxxxEM22_protocol_structTYPE* xxxE);
 uint16_t calculate_CRC(uint8_t* buff);
-void verify_CRC(void);
 
 /* Function End */
 

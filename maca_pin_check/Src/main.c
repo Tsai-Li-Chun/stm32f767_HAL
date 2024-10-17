@@ -60,8 +60,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint8_t Buffer_Src[8]={0x12,0x34,0x56,0x78,0x9A,0xBC,0xde,0x0F};
-uint8_t Buffer_Dest[8]={0};
+
 /* USER CODE END 0 */
 
 /**
@@ -105,8 +104,7 @@ int main(void)
 	MX_TIM4_Init();
 	/* USER CODE BEGIN 2 */
 	HAL_TIM_Base_Start_IT(&htim3);
-	hdma_memtomem_dma2_stream1.XferCpltCallback = &DmaXferCompleteCallback;
-
+	
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -121,15 +119,6 @@ int main(void)
 		// 	CDC_Transmit_FS(&for_tim4,1);
 		// 	delay_1ms(1);
 		// }
-		HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream1,(uint32_t)Buffer_Src,(uint32_t)Buffer_Dest,8);
-		HAL_GPIO_WritePin(user1_GPIO_Port, user1_Pin, GPIO_PIN_SET);
-
-		HAL_GPIO_WritePin(user2_GPIO_Port, user2_Pin, GPIO_PIN_SET);
-		for( int i=0; i<10; i++ )
-			Buffer_Dest[i] = 0;	
-		HAL_GPIO_WritePin(user2_GPIO_Port, user2_Pin, GPIO_PIN_RESET);
-
-		delay_1ms(20);
 	}
 	/* USER CODE END 3 */
 }
@@ -167,7 +156,7 @@ void SystemClock_Config(void)
 	/** Initializes the CPU, AHB and APB buses clocks
 	*/
 	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-															|RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+								 |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
 	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;

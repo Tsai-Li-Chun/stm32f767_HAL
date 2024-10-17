@@ -51,7 +51,7 @@
 #define APP_RX_DATA_SIZE  2048
 #define APP_TX_DATA_SIZE  2048
 /* USER CODE BEGIN EXPORTED_DEFINES */
-#define usb_buff_max_size 1024
+// #define usb_buff_max_size 1024
 /* USER CODE END EXPORTED_DEFINES */
 
 /**
@@ -93,7 +93,9 @@
 extern USBD_CDC_ItfTypeDef USBD_Interface_fops_FS;
 
 /* USER CODE BEGIN EXPORTED_VARIABLES */
-extern uint8_t usb_tx_buff[usb_buff_max_size];
+extern uint8_t UserTxBufferFS[APP_TX_DATA_SIZE];
+extern uint8_t UserRxBufferFS[APP_RX_DATA_SIZE];
+// extern uint8_t usb_tx_buff[usb_buff_max_size];
 /* USER CODE END EXPORTED_VARIABLES */
 
 /**

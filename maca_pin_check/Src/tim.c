@@ -198,14 +198,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	/* if an interrupt occurs in TIM3 */
 	if( htim->Instance == TIM3 )
 	{
-		if( maca_rx_flag!=0x3F )
-			HAL_GPIO_WritePin(debug_lack_GPIO_Port, debug_lack_Pin, GPIO_PIN_SET);
-		maca_rx_flag = 0;
-		if(delay_time_1ms>0) delay_time_1ms--;
 		HAL_GPIO_TogglePin(debug_tim3_GPIO_Port, debug_tim3_Pin);
 		HAL_GPIO_WritePin(debug_allOK_GPIO_Port, debug_allOK_Pin, GPIO_PIN_RESET);
+		/* delay time -- */
+		if(delay_time_1ms>0) delay_time_1ms--;
+		/* check information from all 6 legs was obtained in the previous cycle time */
+		if( maca_rx_flag != maca_all_rx_flag )
+			HAL_GPIO_WritePin(debug_lack_GPIO_Port, debug_lack_Pin, GPIO_PIN_SET);
+		/* all MACA 6 legs flag reset */
+		maca_rx_flag = 0;
 		/* send command to read absolute position of six legs */
-		// HAL_UART_Transmit_IT(&huart1, read_absolute_position, 8);
 		for(for_tim3=0; for_tim3<number_of_legs; for_tim3++)
 		{
 			uart_tx_buff_index = uart_tx_buff+(for_tim3*command_length);
@@ -213,12 +215,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			{
 				HAL_UART_Transmit_IT(huartX[for_tim3], uart_tx_buff_index, command_length);
 				HAL_GPIO_WritePin(tx_gpio_debug_port[for_tim3], tx_gpio_debug_pin[for_tim3], GPIO_PIN_SET);
-				// HAL_GPIO_WritePin(rx_gpio_debug_port[for_tim3], rx_gpio_debug_pin[for_tim3], GPIO_PIN_RESET);
 			}
 			else
 			{
 				/* To be added */
-				// HAL_GPIO_WritePin(debug_lack_GPIO_Port, debug_lack_Pin, GPIO_PIN_SET);
+				HAL_GPIO_WritePin(debug_lack_GPIO_Port, debug_lack_Pin, GPIO_PIN_SET);
 			}
 		}
 	}
@@ -227,15 +228,38 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	if( htim->Instance == TIM4 )
 	{
 		HAL_GPIO_TogglePin(debug_tim4_GPIO_Port, debug_tim4_Pin);
+		/* check if the information from all 6 legs has been obtained */
 		if( maca_rx_flag == maca_all_rx_flag )
 		{
-			HAL_TIM_Base_Stop_IT(htim);
-			HAL_GPIO_WritePin(debug_allOK_GPIO_Port, debug_allOK_Pin, GPIO_PIN_SET);
 			HAL_GPIO_WritePin(debug_tim4_GPIO_Port, debug_tim4_Pin, GPIO_PIN_RESET);
-			decode_protocol();
-			CDC_Transmit_FS(usb_tx_buff,27);
-			// for(for_tim4=0; for_tim4<number_of_legs; for_tim4++)
-			// 	CDC_Transmit_FS(&for_tim4,1);
+			HAL_GPIO_WritePin(debug_allOK_GPIO_Port, debug_allOK_Pin, GPIO_PIN_SET);
+			/* stop the TIM4 counter interrupt */
+			HAL_TIM_Base_Stop_IT(htim);
+			/* decode the 6 legs sequentially and check for errors */
+			for(for_tim4=0; for_tim4<number_of_legs; for_tim4++)
+			{
+				/* if decoding incorrect, break out of loop */
+				if(decode_protocol(uart_rx_buff+(for_tim4*response_max_length),
+								   &LDxxxE_protocol_struct_rx[for_tim4])	!= LDxxxE_OK)
+					for_tim4 = response_max_length;
+				else
+				{
+					UserTxBufferFS[for_tim4*4+1] = uart_rx_buff[for_tim4*response_max_length+3];
+					UserTxBufferFS[for_tim4*4+2] = uart_rx_buff[for_tim4*response_max_length+4];
+					UserTxBufferFS[for_tim4*4+3] = uart_rx_buff[for_tim4*response_max_length+5];
+					UserTxBufferFS[for_tim4*4+4] = uart_rx_buff[for_tim4*response_max_length+6];
+				}
+			}
+			/*  */
+			if( for_tim4 == number_of_legs )
+			{
+				UserTxBufferFS[0]  = 'C';
+				UserTxBufferFS[25] = 'A';
+				UserTxBufferFS[26] = 'S';
+				CDC_Transmit_FS(UserTxBufferFS,27);
+			}
+			else
+				HAL_GPIO_WritePin(debug_lack_GPIO_Port, debug_lack_Pin, GPIO_PIN_SET);
 		}
 	}
 }
